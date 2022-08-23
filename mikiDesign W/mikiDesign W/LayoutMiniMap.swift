@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LayoutMiniMap: View {
     @ObservedObject var dispManager: DispManager = .dispManager
-    
+    @Binding var layout: [ShapeConfiguration]
     @StateObject var model: LayoutModel
     @State var reduction: CGFloat
     let iconList = ["", "wifi", "battery.100"]
@@ -44,8 +44,7 @@ struct LayoutMiniMap: View {
                 
             
             ZStack {
-                
-                ForEach($model.shapeArray){ status in
+                ForEach($layout){ status in
                     MiniShapeView(status: status, reduction: reduction)
                         .onTapGesture {
                             model.select = model.searchArray(id: status.id) ?? 0

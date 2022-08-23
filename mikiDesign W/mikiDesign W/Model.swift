@@ -36,11 +36,10 @@ class LayoutModel: ObservableObject {
     func saveLayout() {
         dispManager.savedLayouts[dispManager.selectIndex] = shapeArray
         let encoder = JSONEncoder()
-        if let jsonValue = try? encoder.encode(dispManager.savedLayouts) {
-            UserDefaults.standard.set(jsonValue, forKey: "user")
-        } else {
+        guard let jsonValue = try? encoder.encode(dispManager.savedLayouts) else {
             fatalError("Failed to encode to JSON.")
         }
+        UserDefaults.standard.set(jsonValue, forKey: "savedLayouts")
     }
     
     func selectedShape() -> ShapeConfiguration {

@@ -15,35 +15,78 @@ struct HomeView: View {
     var body: some View {
         ZStack {
             Rectangle()
+                .foregroundColor(Color.blue)
                 .edgesIgnoringSafeArea(.all)
             
-            ScrollView {
-                Spacer().frame(height: 10)
-                LazyVGrid(columns: layout, spacing: 3) {
-                    ForEach(0..<dispManager.savedLayouts.count){ num in
+            VStack(spacing: 0) {
+                Spacer().frame(height: phone.h*0.1)
+                
+                ScrollView {
+                    Spacer().frame(height: 10)
+                    LazyVGrid(columns: layout, spacing: 3) {
+                        ForEach(0..<dispManager.savedLayouts.count){ num in
+                            Button(action: {
+                                model.select = num
+                            }){
+                                LayoutMiniMap(layout: $dispManager.savedLayouts[num], model: model, reduction: 3)
+                                    .padding(5)
+                                    .border(model.select == num ? Color.red : Color.clear,
+                                            width: 5)
+                                    .overlay(
+                                        Image("clear")
+                                            .frame(width: phone.w/2.5, height: phone.h/3)
+                                            .foregroundColor(Color.clear)
+                                    )
+                            }
+                        }
                         Button(action: {
-                            model.select = num
+                            dispManager.selectIndex = dispManager.savedLayouts.count
+                            dispManager.savedLayouts.append([])
+                            dispManager.display = "Layout"
                         }){
-                            LayoutMiniMap(model: model, reduction: 2.5)
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(lineWidth: 3)
+                                .frame(width: phone.w/3, height: phone.h/3)
+                                .padding(5)
+                                .overlay(
+                                    Text("＋")
+                                        .font(.custom("default", size: 50))
+                                )
                         }
                     }
-                    Button(action: {}){
-                        
-                    }
                 }
-            }
-            
-            VStack(spacing: 0) {
-                Rectangle()
-                    .frame(width: phone.w, height: phone.h*0.1)
-                    .foregroundColor(Color.blue)
-                Rectangle()
-                    .frame(width: phone.w, height: phone.h*0.8)
-                    .foregroundColor(Color.white)
-                Rectangle()
-                    .frame(width: phone.w, height: phone.h*0.1)
-                    .foregroundColor(Color.blue)
-            }
+                .frame(width: phone.w, height: phone.h*0.7)
+                .background(Color.white)
+                
+                HStack(spacing: phone.w/15) {
+                    Button(action: {
+                        dispManager.display = "Layout"
+                    }){
+                        Image(systemName: "wand.and.stars")
+                            .resizable()
+                            .frame(width: phone.w/10, height: phone.w/10)
+                            .foregroundColor(Color.white)
+                    }
+                    Button(action: {
+                        dispManager.selectIndex = dispManager.savedLayouts.count
+                        dispManager.savedLayouts.append([])
+                        dispManager.display = "Layout"
+                    }){
+                        Image(systemName: "plus.square")
+                            .resizable()
+                            .frame(width: phone.w/10, height: phone.w/10)
+                            .foregroundColor(Color.white)
+                    }
+                    Button(action: {}){
+                        Image(systemName: "trash")
+                            .resizable()
+                            .frame(width: phone.w/10, height: phone.w/10)
+                            .foregroundColor(Color.white)
+                    }
+                }.frame(height: phone.h*0.1)
+                Spacer().frame(height: phone.h*0.1)
+                
+            }.frame(height: phone.h)
         }
     }
 }

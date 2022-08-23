@@ -30,7 +30,7 @@ struct TitleView: View {
                 .foregroundColor(Color.white.opacity(0.1))
                 .onTapGesture {
                     manager.roop = false
-                    dispManager.display = "Layout"
+                    dispManager.display = "Home"
                 }
             VStack {
                 Image("logo")

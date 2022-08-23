@@ -346,7 +346,7 @@ struct MiniMapTab: View {
     @State var reduction = CGFloat(3.5)
     var body: some View {
         VStack {
-            LayoutMiniMap(model: model, reduction: reduction)
+            LayoutMiniMap(layout: $model.shapeArray, model: model, reduction: reduction)
         }
     }
 }

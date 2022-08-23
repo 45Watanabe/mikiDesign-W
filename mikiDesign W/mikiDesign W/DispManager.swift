@@ -25,14 +25,13 @@ class DispManager: ObservableObject {
     
     // レイアウトのロード
     func loadLayout() {
-        if let savedValue = UserDefaults.standard.data(forKey: "user") {
+        if let savedValue = UserDefaults.standard.data(forKey: "savedLayouts") {
             let decoder = JSONDecoder()
-            if let array: [[ShapeConfiguration]] = try?
-                decoder.decode([[ShapeConfiguration]].self, from: savedValue) {
-                savedLayouts = array
-            } else {
+            guard let array: [[ShapeConfiguration]] = try?
+                    decoder.decode([[ShapeConfiguration]].self, from: savedValue) else {
                 fatalError("Failed to decode from JSON.")
             }
+            savedLayouts = array
         }
     }
 }

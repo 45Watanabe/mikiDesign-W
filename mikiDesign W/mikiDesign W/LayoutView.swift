@@ -69,6 +69,9 @@ struct LayoutView: View {
                     summonedTabPosition.y = phone.w*0.2
                 }
         }
+        .onAppear() {
+            model.assignmentLayout()
+        }
     }
 }
 
