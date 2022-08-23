@@ -22,15 +22,15 @@ struct HomeView: View {
                 Spacer().frame(height: phone.h*0.1)
                 
                 ScrollView {
-                    Spacer().frame(height: 10)
+                    Spacer().frame(height: 50)
                     LazyVGrid(columns: layout, spacing: 3) {
                         ForEach(0..<dispManager.savedLayouts.count){ num in
                             Button(action: {
-                                model.select = num
+                                dispManager.selectIndex = num
                             }){
                                 LayoutMiniMap(layout: $dispManager.savedLayouts[num], model: model, reduction: 3)
                                     .padding(5)
-                                    .border(model.select == num ? Color.red : Color.clear,
+                                    .border(dispManager.selectIndex == num ? Color.red : Color.clear,
                                             width: 5)
                                     .overlay(
                                         Image("clear")
@@ -54,6 +54,7 @@ struct HomeView: View {
                                 )
                         }
                     }
+                    Spacer().frame(height: 50)
                 }
                 .frame(width: phone.w, height: phone.h*0.7)
                 .background(Color.white)
