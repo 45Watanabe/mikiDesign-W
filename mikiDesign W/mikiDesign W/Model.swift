@@ -19,7 +19,11 @@ class LayoutModel: ObservableObject {
     @Published var isEditMode = false
     @Published var summonTab = "empty"
     
-    init(){}
+    init(){
+        if shapeArray.isEmpty {
+            addShape()
+        }
+    }
     
     func assignmentLayout() {
         shapeArray = dispManager.savedLayouts[dispManager.selectIndex]

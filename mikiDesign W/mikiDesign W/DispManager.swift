@@ -12,7 +12,7 @@ class DispManager: ObservableObject {
     @Published var display = "Title"
     @Published var safeAreaHeight = CGFloat(0)
     
-    @Published var savedLayouts: [[ShapeConfiguration]] = []
+    @Published var savedLayouts: [[ShapeConfiguration]] = [[]]
     @Published var selectIndex = 0
     
     init() {
