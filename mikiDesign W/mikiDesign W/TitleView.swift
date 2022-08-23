@@ -101,12 +101,14 @@ class AnimationManager: ObservableObject {
         }
     }
     
+    let colorList: [Color] = [.red, .green, .blue, .pink, .gray, .white, .cyan,
+                              .mint, .orange, .purple, .yellow, .black]
     func createRandomShape() {
-        if randomShapes.count > 40 {
+        if randomShapes.count > 100 {
             randomShapes.removeFirst()
         }
         let randomShape: useTitleShape = useTitleShape(
-            color: ColorList.defaultColorList.randomElement()!,
+            color: colorList.randomElement()!,
             size: CGSize(width: phone.w/CGFloat(Int.random(in: 1...10)),
                          height: phone.w/CGFloat(Int.random(in: 1...10))),
             position: CGPoint(x: CGFloat.random(in: 0...phone.w),
@@ -124,6 +126,7 @@ struct useTitleShape: Identifiable {
     var position: CGPoint
     var rotation: Double
 }
+
 struct TitleView_Previews: PreviewProvider {
     static var previews: some View {
         TitleView()

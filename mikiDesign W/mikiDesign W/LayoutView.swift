@@ -11,6 +11,7 @@ struct LayoutView: View {
     @StateObject private var model = LayoutModel()
     @State var isEditMode = false
     @State var ControlerPosition = CGPoint(x: 0, y: 0)
+    @State var summonedTabPosition = CGPoint(x: 0, y: 0)
     var body: some View {
         ZStack {
             // 図の全表示
@@ -35,6 +36,7 @@ struct LayoutView: View {
                         .frame(alignment: .bottomTrailing)
                         .shadow(color: Color.black, radius: 10, x: 0, y: 0)
                 )
+                .rotationEffect(Angle(degrees: model.selectedShape().rotation))
                 .position(model.selectedShape().position)
             
             ControllerView(model: model)
@@ -53,8 +55,18 @@ struct LayoutView: View {
                     .onChanged({ value in
                         self.ControlerPosition = value.location}))
                 .onAppear(){
-                    ControlerPosition.x = UIScreen.main.bounds.width*0.75
-                    ControlerPosition.y = UIScreen.main.bounds.width*0.4
+                    ControlerPosition.x = phone.w*0.75
+                    ControlerPosition.y = phone.w*0.4
+                }
+            
+            SummonedEditTab(model: model, status: $model.shapeArray[model.select])
+                .position(summonedTabPosition)
+                .gesture(DragGesture()
+                    .onChanged({ value in
+                        self.summonedTabPosition = value.location}))
+                .onAppear(){
+                    summonedTabPosition.x = phone.w/2
+                    summonedTabPosition.y = phone.w*0.2
                 }
         }
     }

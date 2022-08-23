@@ -10,14 +10,23 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var dispManager: DispManager = .dispManager
     var body: some View {
-        if dispManager.display == "Title" {
-            TitleView()
-        } else if dispManager.display == "Home" {
-            HomeView()
-        } else if dispManager.display == "Layout" {
-            LayoutView()
-        } else if dispManager.display == "" {
-            
+        ZStack {
+            GeometryReader { geometry in
+                Rectangle()
+                    .foregroundColor(Color.clear)
+                    .onAppear{
+                        dispManager.safeAreaHeight = geometry.size.height
+                    }
+                if dispManager.display == "Title" {
+                    TitleView()
+                } else if dispManager.display == "Home" {
+                    HomeView()
+                } else if dispManager.display == "Layout" {
+                    LayoutView()
+                } else if dispManager.display == "" {
+                    
+                }
+            }
         }
     }
 }

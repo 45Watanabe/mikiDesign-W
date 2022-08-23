@@ -9,6 +9,7 @@
 import SwiftUI
 
 class LayoutModel: ObservableObject {
+    @ObservedObject var dispManager: DispManager = .dispManager
     
     @Published var shapeArray: [ShapeConfiguration] = []
     @Published var beforeEditPosition = CGPoint(x: 0, y: 0)
@@ -16,9 +17,26 @@ class LayoutModel: ObservableObject {
     @Published var isHide = false
     @Published var selectTabMode = "Home"
     @Published var isEditMode = false
+    @Published var summonTab = "empty"
     
-    init(){
-        addShape()
+    init(){}
+    
+    func assignmentLayout() {
+        shapeArray = dispManager.savedLayouts[dispManager.selectIndex]
+        if shapeArray.isEmpty {
+            addShape()
+        }
+    }
+    
+    // レイアウトのセーブ
+    func saveLayout() {
+        dispManager.savedLayouts[dispManager.selectIndex] = shapeArray
+        let encoder = JSONEncoder()
+        if let jsonValue = try? encoder.encode(dispManager.savedLayouts) {
+            UserDefaults.standard.set(jsonValue, forKey: "user")
+        } else {
+            fatalError("Failed to encode to JSON.")
+        }
     }
     
     func selectedShape() -> ShapeConfiguration {
@@ -43,8 +61,10 @@ class LayoutModel: ObservableObject {
     }
 
     func addShape() {
-        shapeArray.append(sampleShape.sampleRectangle)
-        select = shapeArray.count-1
+        if shapeArray.count == 0 {
+            shapeArray.append(sampleShape().sampleRectangle)
+            select = shapeArray.count-1
+        }
     }
     
     func removeShape() {
@@ -136,6 +156,6 @@ class LayoutModel: ObservableObject {
 
 
 class sampleShape {
-    static let sampleRectangle: ShapeConfiguration = ShapeConfiguration(style: "Rectangle", color: Color.red , size: CGSize(width: 100, height: 100), position: CGPoint(x: phone.w/2, y: phone.h/2), opacity: 1.0, rotation: 0.0, shadow: ShadowConfiguration(color: Color.black, shadowRadius: 0, shadow_x: 0, shadow_y: 0), frame: FrameConfiguration(frameWidth: 1, frameColor: Color.black, frameOpacity: 0.5), lock: false, corner: 0, symbolName: "applelogo", text: TextConfiguration(character: "", font: "Copperplate", size: 20))
+    let sampleRectangle: ShapeConfiguration = ShapeConfiguration(style: "Rectangle", color: SColor(r: 1, g: 0, b: 0, o: 1) , size: CGSize(width: 100, height: 100), position: CGPoint(x: phone.w/2, y: phone.h/2), opacity: 1.0, rotation: 0.0, shadow: ShadowConfiguration(color: SColor(r: 0, g: 0, b: 0, o: 0), radius: 0, x: 0, y: 0), frame: FrameConfiguration(width: 1, color: SColor(r: 0, g: 0, b: 0, o: 0), opacity: 0.5), lock: false, corner: 0, symbolName: "applelogo", text: TextConfiguration(character: "", font: "Copperplate", size: 20))
     
 }

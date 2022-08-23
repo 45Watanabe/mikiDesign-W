@@ -9,7 +9,7 @@ import SwiftUI
 
 struct selectColoriew: View {
     @ObservedObject var cl: ColorList = .colorList
-    @Binding var status: Color
+    @Binding var status: SColor
     let changeStatus: String
     let small: Bool
     @State var newColor = Color(red: 1.0, green: 0, blue: 0, opacity: 1)
@@ -46,7 +46,7 @@ struct selectColoriew: View {
     var colorButtons: some View {
         ScrollView(.horizontal){
             HStack(spacing: 2) {
-                ForEach(ColorList.defaultColorList, id: \.self){ color in
+                ForEach(ColorList.defaultColorList){ color in
                     ColorCell(status: $status, color: color, size: small ? phone.w/15 : phone.w/10)
                 }
             }
@@ -55,7 +55,7 @@ struct selectColoriew: View {
     var userColor: some View {
         ScrollView(.horizontal){
             HStack(spacing: 2) {
-                ForEach(cl.userColorList, id: \.self){ color in
+                ForEach(cl.userColorList){ color in
                     ColorCell(status: $status, color: color, size: small ? phone.w/15 : phone.w/10)
                 }
             }
@@ -65,8 +65,8 @@ struct selectColoriew: View {
 }
 
 struct ColorCell: View {
-    @Binding var status: Color
-    @State var color: Color
+    @Binding var status: SColor
+    @State var color: SColor
     let size: CGFloat
     var body: some View {
         Button(action: {
@@ -79,13 +79,14 @@ struct ColorCell: View {
                 .overlay(
                     Rectangle()
                         .frame(width: 1, height: size*1.2)
-                        .foregroundColor(Color.black)
+                        .foregroundColor(Color.black.opacity(0.3))
                         .rotationEffect(Angle(degrees: 45))
                 )
                 .overlay(
                     Rectangle()
                         .frame(width: size, height: size)
-                        .foregroundColor(color)
+                        .foregroundColor(Color(red: color.r, green: color.g,
+                                               blue: color.b, opacity: color.o))
                 )
         }
     }
@@ -93,20 +94,20 @@ struct ColorCell: View {
 
 class ColorList: ObservableObject {
     static let colorList = ColorList()
-    static let defaultColorList: [Color] = [
-        Color(red: 1, green: 0, blue: 0, opacity: 1), // 赤
-        Color(red: 1, green: 0.7, blue: 1, opacity: 1), // 桃
-        Color(red: 1, green: 0.55, blue: 0.3, opacity: 1), // 橙
-        Color(red: 0.95, green: 0.8, blue: 0.25, opacity: 1), // 黄
-        Color(red: 0.55, green: 0, blue: 1, opacity: 1), // 紫
-        Color(red: 0, green: 0, blue: 1, opacity: 1), // 青
-        Color(red: 0, green: 1, blue: 0, opacity: 1), // 緑
-        Color(red: 0, green: 0, blue: 0, opacity: 1), // 黒
-        Color(red: 0.5, green: 0.5, blue: 0.5, opacity: 1), // 灰
-        Color(red: 1, green: 1, blue: 1, opacity: 1), // 白
-        Color(red: 0, green: 1, blue: 0, opacity: 0)  // 透明
+    static let defaultColorList: [SColor] = [
+        SColor(r: 1, g: 0, b: 0, o: 1), // 赤
+        SColor(r: 1, g: 0.7, b: 1, o: 1), // 桃
+        SColor(r: 1, g: 0.55, b: 0.3, o: 1), // 橙
+        SColor(r: 0.95, g: 0.8, b: 0.25, o: 1), // 黄
+        SColor(r: 0.55, g: 0, b: 1, o: 1), // 紫
+        SColor(r: 0, g: 0, b: 1, o: 1), // 青
+        SColor(r: 0, g: 1, b: 0, o: 1), // 緑
+        SColor(r: 0, g: 0, b: 0, o: 1), // 黒
+        SColor(r: 0.5, g: 0.5, b: 0.5, o: 1), // 灰
+        SColor(r: 1, g: 1, b: 1, o: 1), // 白
+        SColor(r: 0, g: 1, b: 0, o: 0)  // 透明
     ]
-    @Published var userColorList: [Color] = []
+    @Published var userColorList: [SColor] = []
     
     init() {
         getColorList()
@@ -115,23 +116,25 @@ class ColorList: ObservableObject {
     func getColorList() {
         let userCL: [String] = UserDefaults.standard.stringArray(forKey: "追加カラーリスト") ?? ["#CDCDFBFF"]
         for colorCode in userCL {
-            var code = colorCode.suffix(8)
-            var array: [CGFloat] = []
-            for _ in 0...3 {
-                array.append(CGFloat(Int("\(code.prefix(2))", radix: 16)!)/255)
-                code.removeFirst(2)
+            if colorCode.prefix(1) == "#" {
+                var code = colorCode.suffix(8)
+                var array: [CGFloat] = []
+                for _ in 0...3 {
+                    array.append(CGFloat(Int("\(code.prefix(2))", radix: 16)!)/255)
+                    code.removeFirst(2)
+                }
+                userColorList.append(
+                    SColor(r: array[0], g: array[1], b: array[2], o: array[3])
+                )
             }
-            userColorList.append(
-                Color(red: array[0], green: array[1], blue: array[2], opacity: array[3])
-            )
         }
     }
     
     func addColor(colorStr: String) {
         if colorStr.prefix(1) != "#" {
             let array = colorStr.components(separatedBy: " ")
-            let newColor = Color(red: CGFloat(Double(array[1])!), green: CGFloat(Double(array[2])!),
-                                 blue: CGFloat(Double(array[3])!), opacity: CGFloat(Double(array[4])!))
+            let newColor = SColor(r: CGFloat(Double(array[1])!), g: CGFloat(Double(array[2])!),
+                                 b: CGFloat(Double(array[3])!), o: CGFloat(Double(array[4])!))
             userColorList.insert(newColor, at: 0)
         }
         saveColor()
@@ -140,7 +143,8 @@ class ColorList: ObservableObject {
     func saveColor() {
         var array: [String] = []
         for color in userColorList {
-            array.append("\(color)")
+            let userColor = Color(red: color.r, green: color.g, blue: color.b, opacity: color.o)
+            array.append("\(userColor)")
         }
         UserDefaults.standard.set(array, forKey: "追加カラーリスト")
     }

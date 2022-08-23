@@ -45,10 +45,10 @@ struct ControllerView: View {
                             Image(systemName: "wand.and.stars.inverse")
                         }
                         Button(action: {
-                            model.selectTabMode = "RemovrShape"
+                            model.selectTabMode = "MiniMap"
                             model.isHide = false
                         }){
-                            Image(systemName: "trash")
+                            Image(systemName: "iphone.circle")
                         }
                         Button(action: {
                             model.selectTabMode = "MoveShape"
@@ -57,7 +57,7 @@ struct ControllerView: View {
                             Image(systemName: "circle.grid.cross")
                         }
                         Button(action: {
-                            model.selectTabMode = "Setting"
+                            model.selectTabMode = "SummonTab"
                             model.isHide = false
                         }){
                             Image(systemName: "gear")
@@ -90,6 +90,10 @@ struct ControlTabView: View {
             EditShapeTab(model: model, status: $status)
         } else if tabMode == "MoveShape" {
             MoveShapeTab(model: model, status: $status)
+        } else if tabMode == "MiniMap" {
+            MiniMapTab(model: model)
+        } else if tabMode == "SummonTab" {
+            SummonEditTab(model: model)
         }
     }
 }
@@ -104,14 +108,33 @@ struct HomeTab: View {
     var body: some View {
         VStack(spacing: 15) {
             HStack(spacing: 15) {
-                ForEach(icons1, id: \.self){ name in
-                    Button(action: {
-                        model.tapButtonInHomeTab(name: name)
-                    }){
-                        Image(systemName: name)
+                Button(action: {
+                    model.tapButtonInHomeTab(name: icons1[0])
+                }){
+                    Image(systemName: icons1[0])
+                        .resizable()
+                        .frame(width: phone.w/10, height: phone.w/10)
+                }
+                Button(action: {
+                    model.tapButtonInHomeTab(name: icons1[1])
+                }){
+                    ZStack {
+                        Image(systemName: icons1[1])
                             .resizable()
-                            .frame(width: phone.w/10, height: phone.w/10)
-                    }
+                            .frame(width: phone.w*0.07, height: phone.w*0.07)
+                            .padding(.leading, phone.w*0.03) .padding(.bottom, phone.w*0.03)
+                        Image(systemName: icons1[0])
+                            .resizable()
+                            .frame(width: phone.w*0.06, height: phone.w*0.06)
+                            .padding(.trailing, phone.w*0.04) .padding(.top, phone.w*0.04)
+                    }.frame(width: phone.w/10, height: phone.w/10)
+                }
+                Button(action: {
+                    model.tapButtonInHomeTab(name: icons1[2])
+                }){
+                    Image(systemName: icons1[2])
+                        .resizable()
+                        .frame(width: phone.w/10, height: phone.w/10)
                 }
             }
             HStack(spacing: 15) {
@@ -134,6 +157,11 @@ struct HomeTab: View {
                             .resizable()
                             .frame(width: phone.w/13, height: phone.w/13)
                     }
+                }
+            }
+            HStack{
+                Button(action: {model.saveLayout()}){
+                    Text("SAVE")
                 }
             }
             Image(systemName: "questionmark.circle")
@@ -310,6 +338,37 @@ struct MoveShapeTab: View {
                 Text("横: \(String(format: "%.1f", phone.w)) x 縦: \(String(format: "%.1f", phone.h))")
             }
         }.frame(width: phone.w/2.2, height: 30)
+    }
+}
+
+struct MiniMapTab: View {
+    @StateObject var model: LayoutModel
+    @State var reduction = CGFloat(3.5)
+    var body: some View {
+        VStack {
+            LayoutMiniMap(model: model, reduction: reduction)
+        }
+    }
+}
+
+struct SummonEditTab: View {
+    @StateObject var model: LayoutModel
+    let editTabList = ["size", "frame", "shadow", "rotation", "color", "empty"]
+    var body: some View {
+        ZStack {
+            VStack {
+                HStack{
+                    ForEach(editTabList, id: \.self){ name in
+                        Button(action: {
+                            model.summonTab = name
+                        }){
+                            Text("\(name)")
+                        }
+                    }
+                }
+                Spacer()
+            }
+        }
     }
 }
 

@@ -26,6 +26,8 @@
 		EA3A201728AA0512009CE32F /* FluctuationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3A201628AA0512009CE32F /* FluctuationButton.swift */; };
 		EA3A201928AA8663009CE32F /* TitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3A201828AA8663009CE32F /* TitleView.swift */; };
 		EA3A201B28AA879A009CE32F /* DispManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3A201A28AA879A009CE32F /* DispManager.swift */; };
+		EA3A201D28AE5B5F009CE32F /* LayoutMiniMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3A201C28AE5B5F009CE32F /* LayoutMiniMap.swift */; };
+		EA3A201F28AE7AF0009CE32F /* SummonedEditTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3A201E28AE7AF0009CE32F /* SummonedEditTab.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +51,8 @@
 		EA3A201628AA0512009CE32F /* FluctuationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluctuationButton.swift; sourceTree = "<group>"; };
 		EA3A201828AA8663009CE32F /* TitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleView.swift; sourceTree = "<group>"; };
 		EA3A201A28AA879A009CE32F /* DispManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispManager.swift; sourceTree = "<group>"; };
+		EA3A201C28AE5B5F009CE32F /* LayoutMiniMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutMiniMap.swift; sourceTree = "<group>"; };
+		EA3A201E28AE7AF0009CE32F /* SummonedEditTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummonedEditTab.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +117,7 @@
 				EA3A1FFE28A3DCCF009CE32F /* SliderView.swift */,
 				EA3A201628AA0512009CE32F /* FluctuationButton.swift */,
 				EA3A200A28A4C785009CE32F /* BaseRectangle.swift */,
+				EA3A201E28AE7AF0009CE32F /* SummonedEditTab.swift */,
 				EA3A201228A6809D009CE32F /* ColorList.swift */,
 			);
 			name = Parts;
@@ -140,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				EA3A1FF128A3DBC0009CE32F /* LayoutView.swift */,
+				EA3A201C28AE5B5F009CE32F /* LayoutMiniMap.swift */,
 			);
 			name = Layout;
 			sourceTree = "<group>";
@@ -224,6 +230,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA3A200F28A664EC009CE32F /* SFSymbolsList.swift in Sources */,
+				EA3A201F28AE7AF0009CE32F /* SummonedEditTab.swift in Sources */,
 				EA3A1FF828A3DC26009CE32F /* Model.swift in Sources */,
 				EA3A201328A6809D009CE32F /* ColorList.swift in Sources */,
 				EA3A1FF228A3DBC0009CE32F /* LayoutView.swift in Sources */,
@@ -237,6 +244,7 @@
 				EA3A1FDE289AA644009CE32F /* mikiDesign_WApp.swift in Sources */,
 				EA3A201728AA0512009CE32F /* FluctuationButton.swift in Sources */,
 				EA3A200B28A4C785009CE32F /* BaseRectangle.swift in Sources */,
+				EA3A201D28AE5B5F009CE32F /* LayoutMiniMap.swift in Sources */,
 				EA3A200D28A4C8B8009CE32F /* TestView.swift in Sources */,
 				EA3A201928AA8663009CE32F /* TitleView.swift in Sources */,
 			);

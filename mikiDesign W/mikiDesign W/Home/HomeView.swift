@@ -8,8 +8,43 @@
 import SwiftUI
 
 struct HomeView: View {
+    @ObservedObject var dispManager: DispManager = .dispManager
+    @StateObject private var model = LayoutModel()
+    private let layout = [GridItem(.adaptive(minimum: UIScreen.main.bounds.width/2.5),
+                                   alignment: .top)]
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Rectangle()
+                .edgesIgnoringSafeArea(.all)
+            
+            ScrollView {
+                Spacer().frame(height: 10)
+                LazyVGrid(columns: layout, spacing: 3) {
+                    ForEach(0..<dispManager.savedLayouts.count){ num in
+                        Button(action: {
+                            model.select = num
+                        }){
+                            LayoutMiniMap(model: model, reduction: 2.5)
+                        }
+                    }
+                    Button(action: {}){
+                        
+                    }
+                }
+            }
+            
+            VStack(spacing: 0) {
+                Rectangle()
+                    .frame(width: phone.w, height: phone.h*0.1)
+                    .foregroundColor(Color.blue)
+                Rectangle()
+                    .frame(width: phone.w, height: phone.h*0.8)
+                    .foregroundColor(Color.white)
+                Rectangle()
+                    .frame(width: phone.w, height: phone.h*0.1)
+                    .foregroundColor(Color.blue)
+            }
+        }
     }
 }
 

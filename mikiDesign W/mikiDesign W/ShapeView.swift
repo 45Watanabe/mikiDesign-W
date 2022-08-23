@@ -12,24 +12,64 @@ struct ShapeView: View {
     var body: some View {
         // 縁の描画
         Shape(status: $status)
-            .foregroundColor(status.frame.frameColor)
-        .frame(width: status.size.width + status.frame.frameWidth + status.frame.frameWidth,
-               height: status.size.height + status.frame.frameWidth + status.frame.frameWidth)
-        .opacity(status.frame.frameOpacity)
-        .shadow(color: status.shadow.color,
-                radius: status.shadow.shadowRadius,
-                x: status.shadow.shadow_x,
-                y: status.shadow.shadow_y)
+            .foregroundColor(Color(red: status.frame.color.r, green: status.frame.color.g,
+                                   blue: status.frame.color.b, opacity: status.frame.color.o))
+        .frame(width: status.size.width + status.frame.width + status.frame.width,
+               height: status.size.height + status.frame.width + status.frame.width)
+        .opacity(status.frame.opacity)
+        .shadow(color: Color(red: status.shadow.color.r, green: status.shadow.color.g,
+                             blue: status.shadow.color.b, opacity: status.shadow.color.o),
+                radius: status.shadow.radius,
+                x: status.shadow.x,
+                y: status.shadow.y)
         .overlay(
             // 図の描画
             Shape(status: $status)
                 .frame(width: status.size.width, height: status.size.height)
-                .foregroundColor(status.color)
+                .foregroundColor(Color(red: status.color.r, green: status.color.g,
+                                       blue: status.color.b, opacity: status.color.o))
                 .opacity(status.opacity)
         )
         .rotationEffect(Angle(degrees: status.rotation))
         
         .position(status.position)
+        .gesture(DragGesture()
+            .onChanged({ value in
+                if !status.lock { self.status.position = value.location }})
+        )
+        
+    }
+}
+
+struct MiniShapeView: View {
+    @Binding var status: ShapeConfiguration
+    @State var reduction: CGFloat
+    var body: some View {
+        // 縁の描画
+        Shape(status: $status)
+            .foregroundColor(Color(red: status.frame.color.r, green: status.frame.color.g,
+                                   blue: status.frame.color.b, opacity: status.frame.color.o))
+        .frame(width: (status.size.width + status.frame.width*2)/reduction,
+               height: (status.size.height + status.frame.width*2)/reduction)
+        .opacity(status.frame.opacity)
+        .shadow(color: Color(red: status.shadow.color.r, green: status.shadow.color.g,
+                             blue: status.shadow.color.b, opacity: status.shadow.color.o),
+                radius: status.shadow.radius/reduction,
+                x: status.shadow.x/reduction,
+                y: status.shadow.y/reduction)
+        .overlay(
+            // 図の描画
+            Shape(status: $status)
+                .frame(width: status.size.width/reduction,
+                       height: status.size.height/reduction)
+                .foregroundColor(Color(red: status.color.r, green: status.color.g,
+                                       blue: status.color.b, opacity: status.color.o))
+                .opacity(status.opacity)
+        )
+        .rotationEffect(Angle(degrees: status.rotation))
+        
+        .position(x: status.position.x/reduction,
+                  y: status.position.y/reduction)
         .gesture(DragGesture()
             .onChanged({ value in
                 if !status.lock { self.status.position = value.location }})
@@ -94,10 +134,10 @@ struct SymbolView: View {
 }
 
 // 図の構造 構成=configuration
-struct ShapeConfiguration: Identifiable {
+struct ShapeConfiguration: Identifiable, Codable {
     var id = UUID().uuidString
     var style: String
-    var color: Color//ShapeColor
+    var color: SColor
     var size: CGSize
     var position: CGPoint
     var opacity: Double
@@ -111,34 +151,44 @@ struct ShapeConfiguration: Identifiable {
     var text: TextConfiguration
 }
 
-// カラー(保存形式の変更により撤廃？)
-//struct ShapeColor: Identifiable {
-//    var id = UUID().uuidString
-//    var red: CGFloat
-//    var green: CGFloat
-//    var blue: CGFloat
-//    var opacity: CGFloat
-//}
+// カラー(Codable準拠のために用意)
+struct SColor: Identifiable, Codable {
+    var id = UUID().uuidString
+    var r: CGFloat
+    var g: CGFloat
+    var b: CGFloat
+    var o: CGFloat
+}
 
 // シャドウ
-struct ShadowConfiguration {
-    var color: Color//ShapeColor
-    var shadowRadius: CGFloat
-    var shadow_x: CGFloat
-    var shadow_y: CGFloat
+struct ShadowConfiguration: Codable {
+    var color: SColor
+    var radius: CGFloat
+    var x: CGFloat
+    var y: CGFloat
 }
 
 // フチ
-struct FrameConfiguration {
-    var frameWidth: CGFloat
-    var frameColor: Color //ShapeColor
-    var frameOpacity: CGFloat
+struct FrameConfiguration: Codable {
+    var width: CGFloat
+    var color: SColor
+    var opacity: CGFloat
 }
 
 
 // 文字
-struct TextConfiguration {
+struct TextConfiguration: Codable {
     var character: String
     var font: String
     var size: CGFloat
 }
+
+struct test: Identifiable, Codable {
+    var id = UUID().uuidString
+    var size: Double
+    var a: CGFloat
+    var b: CGSize
+    var c: CGPoint
+//    var d: Color
+}
+

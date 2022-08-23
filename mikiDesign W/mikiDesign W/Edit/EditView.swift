@@ -99,7 +99,7 @@ struct EditView: View {
                 }
                 Group {
                     editFrameView(status: $status, isColorEdit: $isFrameColorEdit)
-                    if isFrameColorEdit{selectColoriew(status: $status.frame.frameColor,
+                    if isFrameColorEdit{selectColoriew(status: $status.frame.color,
                                                        changeStatus: "フレーム", small: false)}
                     editShadowView(status: $status, isColorEdit: $isShadowColorEdit)
                     if isShadowColorEdit{selectColoriew(status: $status.shadow.color,
@@ -208,14 +208,14 @@ struct editFrameView: View {
             HStack {
                 Group {
                     VStack {
-                        FluctuationButton(text: "幅", addIs1: true, value: $status.frame.frameWidth)
+                        FluctuationButton(text: "幅", addIs1: true, value: $status.frame.width)
                         Text("色の変更")
                             .background(Color.gray)
                             .onTapGesture { isColorEdit.toggle() }
                     }
                 }
                 Group {
-                    FluctuationButton(text: "透明", addIs1: false, value: $status.frame.frameOpacity)
+                    FluctuationButton(text: "透明", addIs1: false, value: $status.frame.opacity)
                 }
             }
         }
@@ -230,7 +230,7 @@ struct editShadowView: View {
             BaseRectangle(size: CGSize(width:  phone.w*0.8, height: phone.w*0.25), text: "シャドウ")
             HStack {
                 VStack {
-                    FluctuationButton(text: "ぼかし", addIs1: true, value: $status.shadow.shadowRadius)
+                    FluctuationButton(text: "ぼかし", addIs1: true, value: $status.shadow.radius)
                     Text("色の変更")
                         .background(Color.gray)
                         .onTapGesture { isColorEdit.toggle() }
@@ -238,8 +238,8 @@ struct editShadowView: View {
                 Spacer().frame(width: phone.w/15)
                 VStack {
                     Group {
-                        FluctuationButton(text: "X", addIs1: true, value: $status.shadow.shadow_x)
-                        FluctuationButton(text: "Y", addIs1: true, value: $status.shadow.shadow_y)
+                        FluctuationButton(text: "X", addIs1: true, value: $status.shadow.x)
+                        FluctuationButton(text: "Y", addIs1: true, value: $status.shadow.y)
                     }
                 }
             }
