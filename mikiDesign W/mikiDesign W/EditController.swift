@@ -45,10 +45,10 @@ struct ControllerView: View {
                             Image(systemName: "wand.and.stars.inverse")
                         }
                         Button(action: {
-                            model.selectTabMode = "MiniMap"
+                            model.selectTabMode = "SummonTab"
                             model.isHide = false
                         }){
-                            Image(systemName: "iphone.circle")
+                            Image(systemName: "macwindow.badge.plus")
                         }
                         Button(action: {
                             model.selectTabMode = "MoveShape"
@@ -57,10 +57,10 @@ struct ControllerView: View {
                             Image(systemName: "circle.grid.cross")
                         }
                         Button(action: {
-                            model.selectTabMode = "SummonTab"
+                            model.selectTabMode = "MiniMap"
                             model.isHide = false
                         }){
-                            Image(systemName: "gear")
+                            Image(systemName: "iphone.circle")
                         }
                     }.foregroundColor(Color.black)
                 }
@@ -161,7 +161,14 @@ struct HomeTab: View {
             }
             HStack{
                 Button(action: {model.saveLayout()}){
-                    Text("SAVE")
+                    Image(systemName: "square.and.arrow.down")
+                        .resizable()
+                        .frame(width: phone.w/12, height: phone.w/10)
+                }
+                Button(action: {model.tapButtonInHomeTab(name: "home")}){
+                    Image(systemName: "house")
+                        .resizable()
+                        .frame(width: phone.w/10, height: phone.w/11)
                 }
             }
             Image(systemName: "questionmark.circle")
@@ -353,20 +360,33 @@ struct MiniMapTab: View {
 
 struct SummonEditTab: View {
     @StateObject var model: LayoutModel
-    let editTabList = ["size", "frame", "shadow", "rotation", "color", "empty"]
+    let iconList1 = ["crop","square.dashed.inset.filled","shadow"]
+    let iconList2 = ["rotate.left","paintbrush","x.square.fill"]
     var body: some View {
         ZStack {
             VStack {
                 HStack{
-                    ForEach(editTabList, id: \.self){ name in
+                    ForEach(iconList1, id: \.self){ name in
                         Button(action: {
                             model.summonTab = name
                         }){
-                            Text("\(name)")
+                            Image(systemName: name)
+                                .resizable()
+                                .frame(width: phone.w/10, height: phone.w/10)
                         }
                     }
                 }
-                Spacer()
+                HStack{
+                    ForEach(iconList2, id: \.self){ name in
+                        Button(action: {
+                            model.summonTab = name
+                        }){
+                            Image(systemName: name)
+                                .resizable()
+                                .frame(width: phone.w/10, height: phone.w/10)
+                        }
+                    }
+                }
             }
         }
     }

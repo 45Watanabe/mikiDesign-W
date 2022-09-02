@@ -12,12 +12,13 @@ struct SummonedEditTab: View {
     @Binding var status: ShapeConfiguration
     @State var isColorEdit = false
     @State var tabOpacity = 1.0
+    
     var body: some View {
         VStack(spacing: 5) {
-            if model.summonTab != "empty" {
+            if model.summonTab != "x.square.fill" {
                 HStack {
-                    Button(action: {model.summonTab = "empty"}){
-                        Image(systemName: "minus.square.fill")
+                    Button(action: {model.summonTab = "x.square.fill"}){
+                        Image(systemName: "x.square.fill")
                             .foregroundColor(Color.black)
                     }
                     Button(action: {tabOpacity = 0.2}){
@@ -30,11 +31,11 @@ struct SummonedEditTab: View {
                     }
                 }.frame(width: phone.w*0.8, alignment: .leading)
             }
-            if model.summonTab == "size" {
+            if model.summonTab == "crop" {
                 editSizeView(status: $status)
-            } else if model.summonTab == "color" {
+            } else if model.summonTab == "paintbrush" {
                 selectColoriew(status: $status.color, changeStatus: "", small: false)
-            } else if model.summonTab == "frame" {
+            } else if model.summonTab == "square.dashed.inset.filled" {
                 editFrameView(status: $status, isColorEdit: $isColorEdit)
                 if isColorEdit {
                     selectColoriew(status: $status.frame.color, changeStatus: "フレーム", small: false)
@@ -44,9 +45,9 @@ struct SummonedEditTab: View {
                 if isColorEdit {
                     selectColoriew(status: $status.frame.color, changeStatus: "シャドウ", small: false)
                 }
-            } else if model.summonTab == "rotation" {
+            } else if model.summonTab == "rotate.left" {
                 editRotationView(status: $status)
-            } else if model.summonTab == "empty" {
+            } else if model.summonTab == "x.square.fill" {
                 
             }
         }.opacity(tabOpacity)

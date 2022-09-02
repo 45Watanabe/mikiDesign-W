@@ -11,7 +11,7 @@ struct ShapeView: View {
     @Binding var status: ShapeConfiguration
     var body: some View {
         // 縁の描画
-        Shape(status: $status)
+        Shape(status: $status, reduction: 1)
             .foregroundColor(Color(red: status.frame.color.r, green: status.frame.color.g,
                                    blue: status.frame.color.b, opacity: status.frame.color.o))
         .frame(width: status.size.width + status.frame.width + status.frame.width,
@@ -24,7 +24,7 @@ struct ShapeView: View {
                 y: status.shadow.y)
         .overlay(
             // 図の描画
-            Shape(status: $status)
+            Shape(status: $status, reduction: 1)
                 .frame(width: status.size.width, height: status.size.height)
                 .foregroundColor(Color(red: status.color.r, green: status.color.g,
                                        blue: status.color.b, opacity: status.color.o))
@@ -46,7 +46,7 @@ struct MiniShapeView: View {
     @State var reduction: CGFloat
     var body: some View {
         // 縁の描画
-        Shape(status: $status)
+        Shape(status: $status, reduction: reduction)
             .foregroundColor(Color(red: status.frame.color.r, green: status.frame.color.g,
                                    blue: status.frame.color.b, opacity: status.frame.color.o))
         .frame(width: (status.size.width + status.frame.width*2)/reduction,
@@ -59,7 +59,7 @@ struct MiniShapeView: View {
                 y: status.shadow.y/reduction)
         .overlay(
             // 図の描画
-            Shape(status: $status)
+            Shape(status: $status, reduction: reduction)
                 .frame(width: status.size.width/reduction,
                        height: status.size.height/reduction)
                 .foregroundColor(Color(red: status.color.r, green: status.color.g,
@@ -80,15 +80,16 @@ struct MiniShapeView: View {
 
 struct Shape: View {
     @Binding var status: ShapeConfiguration
+    @State var reduction: CGFloat
     var body: some View {
         if status.style == "Rectangle" {
-            RectangleView(status: $status)
+            RectangleView(status: $status, reduction: reduction)
         } else if status.style == "Circle" {
             CircleView(status: $status)
         } else if status.style == "Ellipse" {
             ElipseView(status: $status)
         } else if status.style == "Text" {
-            TextView(status: $status)
+            TextView(status: $status, reduction: reduction)
         } else if status.style == "SFSymbols" {
             SymbolView(status: $status)
         }
@@ -97,8 +98,9 @@ struct Shape: View {
 
 struct RectangleView: View {
     @Binding var status: ShapeConfiguration
+    @State var reduction: CGFloat
     var body: some View {
-        RoundedRectangle(cornerRadius: status.corner)
+        RoundedRectangle(cornerRadius: status.corner/reduction)
     }
 }
 
@@ -118,10 +120,11 @@ struct ElipseView: View {
 
 struct TextView: View {
     @Binding var status: ShapeConfiguration
+    @State var reduction: CGFloat
     var body: some View {
         Text(status.text.character == "" ?
              "テキスト" : "\(status.text.character)")
-        .font(.custom(status.text.font, size: status.text.size))
+        .font(.custom(status.text.font, size: status.text.size/reduction))
     }
 }
 
@@ -182,13 +185,3 @@ struct TextConfiguration: Codable {
     var font: String
     var size: CGFloat
 }
-
-struct test: Identifiable, Codable {
-    var id = UUID().uuidString
-    var size: Double
-    var a: CGFloat
-    var b: CGSize
-    var c: CGPoint
-//    var d: Color
-}
-

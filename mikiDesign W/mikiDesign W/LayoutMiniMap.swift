@@ -12,15 +12,9 @@ struct LayoutMiniMap: View {
     @Binding var layout: [ShapeConfiguration]
     @StateObject var model: LayoutModel
     @State var reduction: CGFloat
-    let iconList = ["", "wifi", "battery.100"]
+    let iconList = ["wifi", "battery.100"]
     var body: some View {
         ZStack {
-            
-            RoundedRectangle(cornerRadius: 5)
-                .stroke(lineWidth: 10)
-                .foregroundColor(Color.black.opacity(0.6))
-                .frame(width: phone.w/reduction + 10,
-                       height: phone.h/reduction + 10)
             
             VStack {
                 HStack(spacing: 3) {
@@ -54,6 +48,12 @@ struct LayoutMiniMap: View {
                     height: dispManager.safeAreaHeight/reduction)
             .padding(1)
             .border(Color.black.opacity(0.2), width: 1)
+            
+            RoundedRectangle(cornerRadius: 5)
+                .stroke(lineWidth: 10)
+                .foregroundColor(Color.black.opacity(0.6))
+                .frame(width: phone.w/reduction + 10,
+                       height: phone.h/reduction + 10)
         }
     }
 }

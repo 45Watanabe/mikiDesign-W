@@ -17,7 +17,7 @@ class LayoutModel: ObservableObject {
     @Published var isHide = false
     @Published var selectTabMode = "Home"
     @Published var isEditMode = false
-    @Published var summonTab = "empty"
+    @Published var summonTab = "x.square.fill"
     
     init(){
         if shapeArray.isEmpty {
@@ -59,15 +59,14 @@ class LayoutModel: ObservableObject {
         case "square.2.stack.3d.bottom.filled": changeOrder(order: "down")
         case "square.3.stack.3d.bottom.filled": changeOrder(order: "bottom")
         case "questionmark.circle": break
+        case "home": dispManager.display = "Home"
         default: break
         }
     }
 
     func addShape() {
-        if shapeArray.count == 0 {
-            shapeArray.append(sampleShape().sampleRectangle)
-            select = shapeArray.count-1
-        }
+        shapeArray.append(sampleShape().sampleRectangle)
+        select = shapeArray.count-1
     }
     
     func removeShape() {
