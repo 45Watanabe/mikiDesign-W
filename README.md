@@ -20,9 +20,6 @@
 ・PCではなく、スマートフォンで簡単に配置、編集、修正、確認ができ、触り心地の確認までのプロセスが短い。    
 
 
-https://user-images.githubusercontent.com/94812163/188667625-c2da4894-cbb9-4fe7-9067-1c1e25561ef9.mp4
-
-
 # Requirement
 
 * 開発環境 Xcode 13.4.1    
