@@ -1,6 +1,7 @@
 # Name
 
-### mikiDesign W
+## mikiDesign W
+#### ファイル内の簡易的デモ映像もぜひご覧ください。    
 
 # DEMO
 
