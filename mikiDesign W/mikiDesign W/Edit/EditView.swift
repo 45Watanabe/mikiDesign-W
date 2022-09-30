@@ -15,10 +15,12 @@ struct EditView: View {
     @State var changeColor = "main"
     @State var isFrameColorEdit = false
     @State var isShadowColorEdit = false
-    
+    @State var bgColor = Color.white
+    let bgColorList: [Color] = [.white, .gray, .black]
     @Environment(\.dismiss) var dismiss
     var body: some View {
         ZStack {
+            
             ShapeView(status: $status)
                 .position(status.position)
             
@@ -47,14 +49,19 @@ struct EditView: View {
             
             VStack {
                 Spacer()
-                Rectangle()
-                    .frame(width: phone.w, height: 1)
-                    .padding(5)
-                ZStack {
-                    editButtons.frame(width: phone.w, height: phone.h/2)
-                    if isSelectFont {fontListView(status: $status)}
-                    if isSelectSymbol {SFSymbolsList(status: $status)}
+                VStack {
+                    Rectangle()
+                        .frame(width: phone.w, height: 1)
+                        .padding(0)
+                        .background(Color.white)
+                    
+                    ZStack {
+                        editButtons.frame(width: phone.w, height: phone.h/2)
+                        if isSelectFont {fontListView(status: $status)}
+                        if isSelectSymbol {SFSymbolsList(status: $status)}
+                    }
                 }
+                .background(Color.white)
             }
             
             // fontList表示ボタン
@@ -62,6 +69,7 @@ struct EditView: View {
                 Spacer().frame(width: phone.w*0.85)
                 VStack {
                     Button(action: {
+                        isSelectSymbol = false
                         isSelectFont.toggle()
                     }){
                         RoundedRectangle(cornerRadius: 5)
@@ -75,6 +83,7 @@ struct EditView: View {
                             )
                     }
                     Button(action: {
+                        isSelectFont = false
                         isSelectSymbol.toggle()
                     }){
                         Image("iconImage")
@@ -83,7 +92,29 @@ struct EditView: View {
                     }
                 }
             }
-        }.background(Color.white)
+            
+            // 背景色の変更
+            HStack{
+                Spacer().frame(width: 10)
+                VStack{
+                    Spacer().frame(height: 100)
+                    ForEach(bgColorList, id: \.self){ color in
+                        Button(action: {
+                            bgColor = color
+                        }){
+                            Rectangle()
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(color)
+                        }
+                    }
+                    
+                    Spacer()
+                }
+                Spacer()
+            }
+            
+        }.background(bgColor)
+            .animation(.default, value: bgColor)
     }
     
     var editButtons: some View {
@@ -110,7 +141,7 @@ struct EditView: View {
             }
             .frame(width: phone.w*0.85)
             .padding(.trailing, phone.w*0.15)
-        
+            
     }
     
 }
@@ -295,7 +326,7 @@ struct editRotationView: View {
 
 struct fontListView: View {
     @Binding var status: ShapeConfiguration
-    var names: [String] = UIFont.familyNames
+    @State var names: [String] = UIFont.familyNames
     var body: some View {
         ZStack {
             Rectangle()
@@ -310,6 +341,12 @@ struct fontListView: View {
                                              Color.gray.opacity(0.2) : Color.white)
                             .shadow(color: Color.gray, radius: 5, x: 0, y: 0)
                             .onTapGesture { status.text.font = name }
+                        if name.prefix(8) == "Hiragino" {
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(lineWidth: 1)
+                                .frame(width: phone.w*0.8, height: 50)
+                                .foregroundColor(Color.red)
+                        }
                         
                         Text("  テキスト : \(name)")
                             .font(.custom(name, size: 15))
@@ -322,6 +359,16 @@ struct fontListView: View {
             }
         }.frame(width: phone.w*0.85, height: phone.h/2)
             .padding(.trailing, phone.w*0.15)
+            .onAppear(){ setList() }
+            
+    }
+    func setList() {
+        names = UIFont.familyNames
+        let japaneseFonts = ["Hiragino Maru Gothic ProN", "Hiragino Mincho ProN", "Hiragino Sans"]
+        for japaneseFont in japaneseFonts {
+            names.insert(japaneseFont, at: 0)
+        }
+        print(names)
     }
 }
 
