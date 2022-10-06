@@ -21,3 +21,18 @@ struct BaseRectangle: View {
             )
     }
 }
+
+struct ButtonBase: View {
+    let size: CGSize
+    let text: String
+    var body: some View {
+        RoundedRectangle(cornerRadius: 3)
+            .frame(width: size.width*1.3, height: size.width*1.5)
+            .foregroundColor(Color.white)
+            .shadow(color: Color.gray, radius: 2, x: 0, y: 0)
+            .overlay(
+                Text("\(text)").font(.custom("Times New Roman", size: 10))
+                    .frame(width: size.width*1.3, height: size.width*1.5, alignment: .bottom)
+            )
+    }
+}

@@ -23,7 +23,7 @@ struct ControllerView: View {
                                height: model.isHide ? 30 : phone.w*0.8)
                 )
             
-            VStack {
+            VStack(spacing: 0) {
                 HStack(spacing: 10) {
                     Group {
                         Button(action: {
@@ -69,6 +69,7 @@ struct ControllerView: View {
                     ControlTabView(model: model,
                                    status: $model.shapeArray[model.select],
                                    tabMode: $model.selectTabMode)
+                    .frame(height: phone.w*0.8-50)
                     Spacer()
                 }
             }.frame(width: phone.w*0.5,
@@ -100,83 +101,84 @@ struct ControlTabView: View {
 
 struct HomeTab: View {
     @StateObject var model: LayoutModel
+    let btnName = ButtonName()
+    let buttons1 = ["追加","追加&編集","編集"]
+    let buttons2 = ["削除","コピー","ロック"]
+    let buttons3 = ["最上","上げる","下げる","最下"]
+    let buttons4 = ["保存","ホーム"]
     
-    let icons1 = ["plus.square","wand.and.rays","wand.and.stars"]
-    let icons2 = ["trash.square","rectangle.on.rectangle.square","lock.square"]
-    let icons3 = ["square.3.stack.3d.top.filled","square.2.stack.3d.top.filled",
-                  "square.2.stack.3d.bottom.filled","square.3.stack.3d.bottom.filled"]
     var body: some View {
         VStack(spacing: 15) {
             HStack(spacing: 15) {
-                Button(action: {
-                    model.tapButtonInHomeTab(name: icons1[0])
-                }){
-                    Image(systemName: icons1[0])
-                        .resizable()
-                        .frame(width: phone.w/10, height: phone.w/10)
-                }
-                Button(action: {
-                    model.tapButtonInHomeTab(name: icons1[1])
-                }){
-                    ZStack {
-                        Image(systemName: icons1[1])
-                            .resizable()
-                            .frame(width: phone.w*0.07, height: phone.w*0.07)
-                            .padding(.leading, phone.w*0.03) .padding(.bottom, phone.w*0.03)
-                        Image(systemName: icons1[0])
-                            .resizable()
-                            .frame(width: phone.w*0.06, height: phone.w*0.06)
-                            .padding(.trailing, phone.w*0.04) .padding(.top, phone.w*0.04)
-                    }.frame(width: phone.w/10, height: phone.w/10)
-                }
-                Button(action: {
-                    model.tapButtonInHomeTab(name: icons1[2])
-                }){
-                    Image(systemName: icons1[2])
-                        .resizable()
-                        .frame(width: phone.w/10, height: phone.w/10)
-                }
-            }
-            HStack(spacing: 15) {
-                ForEach(icons2, id: \.self){ name in
+                ForEach(buttons1, id:\.self) { name in
                     Button(action: {
                         model.tapButtonInHomeTab(name: name)
                     }){
-                        Image(systemName: name)
-                            .resizable()
-                            .frame(width: phone.w/10, height: phone.w/10)
+                        ZStack{
+                            ButtonBase(size: CGSize(width: phone.w/10, height: phone.w/10), text: name)
+                            Image(systemName: btnName.getSymbol(name: name))
+                                .resizable()
+                                .frame(width: phone.w/10, height: phone.w/10)
+                                .padding(.bottom, phone.w/50)
+                        }
+                    }
+                }
+            }
+            HStack(spacing: 15) {
+                ForEach(buttons2, id:\.self) { name in
+                    Button(action: {
+                        model.tapButtonInHomeTab(name: name)
+                    }){
+                        ZStack{
+                            ButtonBase(size: CGSize(width: phone.w/10, height: phone.w/10), text: name)
+                            Image(systemName: btnName.getSymbol(name: name))
+                                .resizable()
+                                .frame(width: phone.w/10, height: phone.w/10)
+                                .padding(.bottom, phone.w/50)
+                        }
                     }
                 }
             }
             HStack {
-                ForEach(icons3, id: \.self){ name in
+                ForEach(buttons3, id:\.self) { name in
                     Button(action: {
                         model.tapButtonInHomeTab(name: name)
                     }){
-                        Image(systemName: name)
-                            .resizable()
-                            .frame(width: phone.w/13, height: phone.w/13)
+                        ZStack{
+                            ButtonBase(size: CGSize(width: phone.w/13, height: phone.w/13), text: "")
+                            Image(systemName: btnName.getSymbol(name: name))
+                                .resizable()
+                                .frame(width: phone.w/13, height: phone.w/13)
+                        }
                     }
                 }
             }
+            
             HStack{
-                Button(action: {model.saveLayout()}){
-                    Image(systemName: "square.and.arrow.down")
-                        .resizable()
-                        .frame(width: phone.w/12, height: phone.w/10)
+                
+                Button(action: {model.tapButtonInHomeTab(name: buttons4[0])}){
+                    ZStack {
+                        ButtonBase(size: CGSize(width: phone.w/10, height: phone.w/10), text: buttons4[0])
+                        Image(systemName: btnName.getSymbol(name: buttons4[0]))
+                            .resizable()
+                            .frame(width: phone.w/12, height: phone.w/10)
+                            .padding(.bottom, phone.w/50)
+                        
+                    }
                 }
-                Button(action: {model.tapButtonInHomeTab(name: "home")}){
-                    Image(systemName: "house")
-                        .resizable()
-                        .frame(width: phone.w/10, height: phone.w/11)
+                Button(action: {model.tapButtonInHomeTab(name: buttons4[1])}){
+                    ZStack {
+                        ButtonBase(size: CGSize(width: phone.w/10, height: phone.w/10), text: buttons4[1])
+                        Image(systemName: btnName.getSymbol(name: buttons4[1]))
+                            .resizable()
+                            .frame(width: phone.w/10, height: phone.w/11)
+                            .padding(.bottom, phone.w/50)
+                    }
                 }
             }
-            Image(systemName: "questionmark.circle")
-                .onTapGesture { model.tapButtonInHomeTab(name: "questionmark.circle") }
-                .frame(width: phone.w/2.2, alignment: .trailing)
-                .fullScreenCover(isPresented: $model.isEditMode) {
-                    EditView(model: model, status: $model.shapeArray[model.select])
-                }
+            .fullScreenCover(isPresented: $model.isEditMode) {
+                EditView(model: model, status: $model.shapeArray[model.select])
+            }
         }
     }
 }
@@ -204,12 +206,12 @@ struct EditShapeTab: View {
                 }
             }
             HStack {
-                Button(action: { model.addShape() }){
+                Button(action: { model.tapButtonInHomeTab(name: "追加")}){
                     Image(systemName: "plus.square")
                         .resizable()
                         .frame(width: 25, height: 25)
                 }
-                Button(action: { model.tapButtonInHomeTab(name: "wand.and.stars") }){
+                Button(action: { model.tapButtonInHomeTab(name: "編集") }){
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: phone.w/3, height: 25)
                         .foregroundColor(Color.blue)
@@ -219,7 +221,7 @@ struct EditShapeTab: View {
                             EditView(model: model, status: $model.shapeArray[model.select])
                                 .foregroundColor(Color.black)
                         }
-                        
+                    
                 }
             }
         }
@@ -239,20 +241,13 @@ struct EditShapeTab: View {
     }
     var editColor: some View {
         selectColoriew(status: $status.color, changeStatus: "", small: true)
-        .frame(width: phone.w/2.2)
+            .frame(width: phone.w/2.2)
     }
     var editSize: some View {
         VStack(spacing: 0) {
+            Text("W: \(String(format: "%.0f", status.size.width))    H: \(String(format: "%.0f", status.size.height))")
             Slider(value: $status.size.width, in: 1...phone.w*1.1)
                 .frame(width: phone.w/2.2)
-            Button(action: {
-                
-            }){
-                Image(systemName: "lock.open") //lock .frame(width: 10, height: 15)
-                    .resizable()
-                    .frame(width: 15, height: 15)
-                    .foregroundColor(Color.black)
-            }
             Slider(value: $status.size.height, in: 1...phone.h*1.1)
                 .frame(width: phone.w/2.2)
         }
@@ -360,30 +355,48 @@ struct MiniMapTab: View {
 
 struct SummonEditTab: View {
     @StateObject var model: LayoutModel
-    let iconList1 = ["crop","square.dashed.inset.filled","shadow"]
-    let iconList2 = ["rotate.left","paintbrush","x.square.fill"]
+    let btnName = ButtonName()
+    let buttons1 = ["サイズ","フレーム","シャドウ"]
+    let buttons2 = ["回転","カラー","閉じる"]
     var body: some View {
         ZStack {
-            VStack {
-                HStack{
-                    ForEach(iconList1, id: \.self){ name in
+            VStack(spacing: 30) {
+                RoundedRectangle(cornerRadius: 10)
+                    .frame(width: phone.w/2.1, height: 30)
+                    .foregroundColor(Color(red: 0, green: 0, blue: 0.5, opacity: 0.8))
+                    .overlay(
+                        Text("ミニウィンドウの呼び出し")
+                            .font(.custom("Hiragino Sans", size: 13).weight(.bold))
+                            .foregroundColor(Color.white)
+                    )
+                
+                HStack(spacing: 15) {
+                    ForEach(buttons1, id:\.self) { name in
                         Button(action: {
                             model.summonTab = name
                         }){
-                            Image(systemName: name)
-                                .resizable()
-                                .frame(width: phone.w/10, height: phone.w/10)
+                            ZStack{
+                                ButtonBase(size: CGSize(width: phone.w/10, height: phone.w/10), text: name)
+                                Image(systemName: btnName.getSymbol(name: name))
+                                    .resizable()
+                                    .frame(width: phone.w/10, height: phone.w/10)
+                                    .padding(.bottom, phone.w/50)
+                            }
                         }
                     }
                 }
-                HStack{
-                    ForEach(iconList2, id: \.self){ name in
+                HStack(spacing: 15) {
+                    ForEach(buttons2, id:\.self) { name in
                         Button(action: {
                             model.summonTab = name
                         }){
-                            Image(systemName: name)
-                                .resizable()
-                                .frame(width: phone.w/10, height: phone.w/10)
+                            ZStack{
+                                ButtonBase(size: CGSize(width: phone.w/10, height: phone.w/10), text: name)
+                                Image(systemName: btnName.getSymbol(name: name))
+                                    .resizable()
+                                    .frame(width: phone.w/10, height: phone.w/10)
+                                    .padding(.bottom, phone.w/50)
+                            }
                         }
                     }
                 }
@@ -413,3 +426,27 @@ struct editStyleButtons: View {
         }.foregroundColor(Color.black)
     }
 }
+
+
+
+//Shape(status: $status, reduction: 1)
+//    .foregroundColor(Color(red: status.frame.color.r, green: status.frame.color.g,
+//                           blue: status.frame.color.b, opacity: status.frame.color.o))
+//.frame(width: status.size.width + status.frame.width + status.frame.width,
+//       height: status.size.height + status.frame.width + status.frame.width)
+//.shadow(color: Color(red: status.shadow.color.r, green: status.shadow.color.g,
+//                     blue: status.shadow.color.b, opacity: status.shadow.color.o),
+//        radius: status.shadow.radius,
+//        x: status.shadow.x,
+//        y: status.shadow.y)
+//.overlay(
+//    // 図の描画
+//    Shape(status: $status, reduction: 1)
+//        .frame(width: status.size.width, height: status.size.height)
+//        .foregroundColor(Color(red: status.color.r, green: status.color.g,
+//                               blue: status.color.b, opacity: status.color.o))
+//        .opacity(status.opacity)
+//)
+//.rotationEffect(Angle(degrees: status.rotation))
+//
+//.position(status.position)

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA3892FC28ED2A6C00CEFB8D /* ButtonName.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3892FB28ED2A6C00CEFB8D /* ButtonName.swift */; };
 		EA3A1FDE289AA644009CE32F /* mikiDesign_WApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3A1FDD289AA644009CE32F /* mikiDesign_WApp.swift */; };
 		EA3A1FE0289AA644009CE32F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3A1FDF289AA644009CE32F /* ContentView.swift */; };
 		EA3A1FE2289AA646009CE32F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA3A1FE1289AA646009CE32F /* Assets.xcassets */; };
@@ -31,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EA3892FB28ED2A6C00CEFB8D /* ButtonName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonName.swift; sourceTree = "<group>"; };
 		EA3A1FDA289AA644009CE32F /* mikiDesign W.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mikiDesign W.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA3A1FDD289AA644009CE32F /* mikiDesign_WApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mikiDesign_WApp.swift; sourceTree = "<group>"; };
 		EA3A1FDF289AA644009CE32F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 				EA3A200128A4A6BC009CE32F /* Edit */,
 				EA3A200028A4A6AA009CE32F /* Controller */,
 				EA3A1FF728A3DC26009CE32F /* Model.swift */,
+				EA3892FB28ED2A6C00CEFB8D /* ButtonName.swift */,
 				EA3A201A28AA879A009CE32F /* DispManager.swift */,
 				EA3A200C28A4C8B8009CE32F /* TestView.swift */,
 				EA3A1FFB28A3DC8D009CE32F /* Parts */,
@@ -247,6 +250,7 @@
 				EA3A201D28AE5B5F009CE32F /* LayoutMiniMap.swift in Sources */,
 				EA3A200D28A4C8B8009CE32F /* TestView.swift in Sources */,
 				EA3A201928AA8663009CE32F /* TitleView.swift in Sources */,
+				EA3892FC28ED2A6C00CEFB8D /* ButtonName.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

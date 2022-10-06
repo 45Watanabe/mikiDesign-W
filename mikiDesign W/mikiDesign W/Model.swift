@@ -17,7 +17,7 @@ class LayoutModel: ObservableObject {
     @Published var isHide = false
     @Published var selectTabMode = "Home"
     @Published var isEditMode = false
-    @Published var summonTab = "x.square.fill"
+    @Published var summonTab = "閉じる"
     
     init(){
         if shapeArray.isEmpty {
@@ -48,18 +48,19 @@ class LayoutModel: ObservableObject {
     
     func tapButtonInHomeTab(name: String) {
         switch name {
-        case "plus.square": addShape()
-        case "wand.and.rays": addShape(); editMode(isMove: true)
-        case "wand.and.stars": editMode(isMove: true)
-        case "trash.square": removeShape()
-        case "rectangle.on.rectangle.square": copyShape()
-        case "lock.square": lockMoveShape()
-        case "square.3.stack.3d.top.filled": changeOrder(order: "top")
-        case "square.2.stack.3d.top.filled": changeOrder(order: "up")
-        case "square.2.stack.3d.bottom.filled": changeOrder(order: "down")
-        case "square.3.stack.3d.bottom.filled": changeOrder(order: "bottom")
+        case "追加": addShape()
+        case "追加&編集": addShape(); editMode(isMove: true)
+        case "編集": editMode(isMove: true)
+        case "削除": removeShape()
+        case "コピー": copyShape()
+        case "ロック": lockMoveShape()
+        case "最上": changeOrder(order: "top")
+        case "上げる": changeOrder(order: "up")
+        case "下げる": changeOrder(order: "down")
+        case "最下": changeOrder(order: "bottom")
         case "questionmark.circle": break
-        case "home": dispManager.display = "Home"
+        case "ホーム": dispManager.display = "Home"
+        case "保存": saveLayout()
         default: break
         }
     }
@@ -158,6 +159,6 @@ class LayoutModel: ObservableObject {
 
 
 class sampleShape {
-    let sampleRectangle: ShapeConfiguration = ShapeConfiguration(style: "Rectangle", color: SColor(r: 1, g: 0, b: 0, o: 1) , size: CGSize(width: 100, height: 100), position: CGPoint(x: phone.w/2, y: phone.h/2), opacity: 1.0, rotation: 0.0, shadow: ShadowConfiguration(color: SColor(r: 0, g: 0, b: 0, o: 0), radius: 0, x: 0, y: 0), frame: FrameConfiguration(width: 1, color: SColor(r: 0, g: 0, b: 0, o: 0), opacity: 0.5), lock: false, corner: 0, symbolName: "applelogo", text: TextConfiguration(character: "", font: "Copperplate", size: 20))
+    let sampleRectangle: ShapeConfiguration = ShapeConfiguration(style: "Rectangle", color: SColor(r: 1, g: 0, b: 0, o: 1) , size: CGSize(width: 100, height: 100), position: CGPoint(x: phone.w/2, y: phone.h/2), opacity: 1.0, rotation: 0.0, shadow: ShadowConfiguration(color: SColor(r: 0, g: 0, b: 0, o: 0), radius: 0, x: 0, y: 0), frame: FrameConfiguration(width: 1, color: SColor(r: 0, g: 0, b: 0, o: 0), opacity: 0.5), lock: false, corner: 0, symbolName: "applelogo", text: TextConfiguration(character: "", font: "Hiragino Sans", size: 20))
     
 }
