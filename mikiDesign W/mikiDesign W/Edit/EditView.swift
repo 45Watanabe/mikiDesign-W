@@ -12,6 +12,7 @@ struct EditView: View {
     @Binding var status: ShapeConfiguration
     @State var isSelectFont = false
     @State var isSelectSymbol = false
+    @State var isSelectImage = false
     @State var changeColor = "main"
     @State var isFrameColorEdit = false
     @State var isShadowColorEdit = false
@@ -59,17 +60,19 @@ struct EditView: View {
                         editButtons.frame(width: phone.w, height: phone.h/2)
                         if isSelectFont {fontListView(status: $status)}
                         if isSelectSymbol {SFSymbolsList(status: $status)}
+//                        if isSelectImage {imageSelectView(status: $status, model: model)}
                     }
                 }
                 .background(Color.white)
             }
             
-            // fontList表示ボタン
+            // モード変更ボタン
             HStack {
                 Spacer().frame(width: phone.w*0.85)
                 VStack {
                     Button(action: {
                         isSelectSymbol = false
+                        isSelectImage = false
                         isSelectFont.toggle()
                     }){
                         RoundedRectangle(cornerRadius: 5)
@@ -84,14 +87,26 @@ struct EditView: View {
                     }
                     Button(action: {
                         isSelectFont = false
+                        isSelectImage = false
                         isSelectSymbol.toggle()
                     }){
                         Image("iconImage")
                             .resizable()
                             .frame(width: phone.w/10, height: phone.w/10)
                     }
+                    Button(action: {
+                        isSelectFont = false
+                        isSelectSymbol = false
+                        isSelectImage.toggle()
+                    }){
+                        Image(systemName: "photo.artframe")
+                            .resizable()
+                            .frame(width: phone.w/10, height: phone.w/10)
+                    }
+                    Spacer()
                 }
             }
+            .padding(.top, phone.h/2)
             
             // 背景色の変更
             HStack{
@@ -113,8 +128,9 @@ struct EditView: View {
                 Spacer()
             }
             
-        }.background(bgColor)
-            .animation(.default, value: bgColor)
+        }
+        .background(bgColor)
+        .animation(.default, value: bgColor)
     }
     
     var editButtons: some View {
@@ -130,11 +146,7 @@ struct EditView: View {
                 }
                 Group {
                     editFrameView(status: $status, isColorEdit: $isFrameColorEdit)
-                    if isFrameColorEdit{selectColoriew(status: $status.frame.color,
-                                                       changeStatus: "フレーム", small: false)}
                     editShadowView(status: $status, isColorEdit: $isShadowColorEdit)
-                    if isShadowColorEdit{selectColoriew(status: $status.shadow.color,
-                                                        changeStatus: "シャドウ", small: false)}
                     editRotationView(status: $status)
                 }
                 
@@ -235,21 +247,37 @@ struct editFrameView: View {
     @Binding var isColorEdit: Bool
     var body: some View {
         ZStack {
-            BaseRectangle(size: CGSize(width:  phone.w*0.8, height: phone.w*0.25), text: "フレーム")
-            HStack {
-                Group {
-                    VStack {
-                        FluctuationButton(text: "幅", addIs1: true, value: $status.frame.width)
-                        Text("色の変更")
-                            .background(Color.gray)
-                            .onTapGesture { isColorEdit.toggle() }
+            BaseRectangle(size: CGSize(width:  phone.w*0.8, height: isColorEdit ? phone.w*0.5 : phone.w*0.25), text: "フレーム")
+            VStack {
+                HStack {
+                    Group {
+                        VStack {
+                            FluctuationButton(text: "幅", addIs1: true, value: $status.frame.width)
+                            HStack {
+                                Text("カラーパレット")
+                                    .foregroundColor(Color.black)
+                                Button(action: {
+                                    isColorEdit.toggle()
+                                }, label: {
+                                    Image(systemName: isColorEdit ? "chevron.up.square.fill" : "chevron.down.square.fill")
+                                        .resizable()
+                                        .frame(width: phone.w/20, height: phone.w/20)
+                                })
+                            }
+                        }
+                    }
+                    Group {
+                        FluctuationButton(text: "透明", addIs1: false, value: $status.frame.opacity)
                     }
                 }
-                Group {
-                    FluctuationButton(text: "透明", addIs1: false, value: $status.frame.opacity)
+                if isColorEdit {
+                    RoundedRectangle(cornerRadius: 20)
+                        .frame(width: phone.w*0.7, height: 1)
+                        .foregroundColor(Color.gray.opacity(0.5))
+                    selectColoriew(status: $status.frame.color, changeStatus: "フレーム", small: false)
                 }
-            }
-        }
+            }.animation(.default, value: isColorEdit)
+        }.animation(.default, value: isColorEdit)
     }
 }
 
@@ -258,23 +286,39 @@ struct editShadowView: View {
     @Binding var isColorEdit: Bool
     var body: some View {
         ZStack {
-            BaseRectangle(size: CGSize(width:  phone.w*0.8, height: phone.w*0.25), text: "シャドウ")
-            HStack {
-                VStack {
-                    FluctuationButton(text: "ぼかし", addIs1: true, value: $status.shadow.radius)
-                    Text("色の変更")
-                        .background(Color.gray)
-                        .onTapGesture { isColorEdit.toggle() }
-                }
-                Spacer().frame(width: phone.w/15)
-                VStack {
-                    Group {
-                        FluctuationButton(text: "X", addIs1: true, value: $status.shadow.x)
-                        FluctuationButton(text: "Y", addIs1: true, value: $status.shadow.y)
+            BaseRectangle(size: CGSize(width:  phone.w*0.8, height: isColorEdit ? phone.w*0.5 : phone.w*0.25), text: "シャドウ")
+            VStack {
+                HStack {
+                    VStack(spacing: 5) {
+                        FluctuationButton(text: "ぼかし", addIs1: true, value: $status.shadow.radius)
+                        HStack {
+                            Text("カラーパレット")
+                                .foregroundColor(Color.black)
+                            Button(action: {
+                                isColorEdit.toggle()
+                            }, label: {
+                                Image(systemName: isColorEdit ? "chevron.up.square.fill" : "chevron.down.square.fill")
+                                    .resizable()
+                                    .frame(width: phone.w/20, height: phone.w/20)
+                            })
+                        }
+                    }
+                    Spacer().frame(width: phone.w/15)
+                    VStack {
+                        Group {
+                            FluctuationButton(text: "X", addIs1: true, value: $status.shadow.x)
+                            FluctuationButton(text: "Y", addIs1: true, value: $status.shadow.y)
+                        }
                     }
                 }
-            }
-        }
+                if isColorEdit {
+                    RoundedRectangle(cornerRadius: 20)
+                        .frame(width: phone.w*0.7, height: 1)
+                        .foregroundColor(Color.gray.opacity(0.5))
+                    selectColoriew(status: $status.shadow.color, changeStatus: "シャドウ", small: false)
+                }
+            }.animation(.default, value: isColorEdit)
+        }.animation(.default, value: isColorEdit)
     }
 }
 
@@ -291,7 +335,7 @@ struct editRotationView: View {
                     VStack {
                         ScrollView(.horizontal) {
                             HStack {
-                                ForEach(0..<25){ i in
+                                ForEach(-24..<25){ i in
                                     Button(action: {
                                         status.rotation = Double(15*i)
                                     }){
@@ -310,7 +354,7 @@ struct editRotationView: View {
                         .frame(width: phone.w/20, height: phone.w/20)
                         .onTapGesture { status.rotation-=1 }
                     
-                    Slider(value: $status.rotation, in: 0...360)
+                    Slider(value: $status.rotation, in: -360...360)
                         .frame(width: phone.w*0.6)
                     
                     Image(systemName: "plus.rectangle")
@@ -348,7 +392,7 @@ struct fontListView: View {
                                 .foregroundColor(Color.red)
                         }
                         
-                        Text("  テキスト : \(name)")
+                        Text("  文字サンプル : \(name)")
                             .font(.custom(name, size: 15))
                             .frame(width: phone.w*0.8, height: 20,
                                    alignment: .leading)
@@ -399,5 +443,151 @@ struct editViewStyleButtons: View {
                     )
             }
         }.foregroundColor(Color.black)
+    }
+}
+
+struct imageSelectView: View {
+    @Binding var status: ShapeConfiguration
+    @StateObject var model: LayoutModel
+    var body: some View {
+        if status.style != "Image" {
+            imageEditView(status: $status, model: model)
+        } else {
+            ZStack {
+                backGround
+                VStack {
+                    Button(action: {
+                        // 画像の追加
+                        // 選択を配列最終に
+                    }, label: {
+                        Image(systemName: "plus.app")
+                    })
+                }
+            }
+            .frame(width: phone.w*0.85, height: phone.h/2)
+            .padding(.trailing, phone.w*0.15)
+        }
+    }
+    var backGround: some View {
+        VStack(spacing: phone.w*0.2) {
+                ForEach(0..<7){ _ in
+                    HStack {
+                        ForEach(0..<7){ _ in
+                            Image(systemName: "lock.fill")
+                                .foregroundColor(Color.black)
+                            Rectangle()
+                                .frame(width: phone.w*0.2, height: 1)
+                                .foregroundColor(Color.black)
+                        }
+                    }
+                    .rotationEffect(Angle(degrees: 45))
+                }
+        }
+        .background(Color.white)
+        .frame(width: phone.w*0.85, height: phone.h/2)
+        .padding(.trailing, phone.w*0.15)
+        .clipped()
+    }
+}
+
+struct editOpacityView: View {
+    @Binding var status: ShapeConfiguration
+    var body: some View {
+        ZStack {
+            BaseRectangle(size: CGSize(width:  phone.w*0.8, height: phone.w*0.15), text: "オパシティ")
+            HStack {
+                HStack {
+                    Text("透明度: \(String(format: "%.1f", status.opacity))")
+                        .frame(width: 90, alignment: .leading)
+                    
+                    Image(systemName: "minus.rectangle")
+                        .resizable()
+                        .frame(width: phone.w/20, height: phone.w/20)
+                        .onTapGesture { status.opacity-=0.1 }
+                    
+                    Slider(value: $status.opacity, in: 0.1...1.0)
+                        .frame(width: phone.w/3)
+                    
+                    Image(systemName: "plus.rectangle")
+                        .resizable()
+                        .frame(width: phone.w/20, height: phone.w/20)
+                        .onTapGesture { status.opacity+=0.1 }
+                }
+            }
+        }
+    }
+}
+
+struct imageEditView: View {
+    @Binding var status: ShapeConfiguration
+    @StateObject var model: LayoutModel
+    @ObservedObject var manager: ImageManager = .imageManager
+    @State var showingImagePicker = false
+    @State private var image: UIImage? = UIImage(systemName: "house")
+    @State var newKey = UUID().uuidString
+    @State var mode = "selectImageInDefault"
+    @State var shadowIsColorEdit = false
+    @State var frameIsColorEdit = false
+    let columns = [GridItem(.fixed(phone.w*0.25)),GridItem(.fixed(phone.w*0.25)),GridItem(.fixed(phone.w*0.25))]
+    var body: some View {
+        VStack {
+            HStack {
+                Button(action: {
+                    mode = "selectImageInDefault"
+                }, label: {
+                    Image(systemName: "iphone")
+                })
+                Button(action: {
+                    mode = "selectImageInStrage"
+                    manager.printAllKey()
+                }, label: {
+                    Image(systemName: "iphone")
+                })
+                Button(action: {
+                    mode = "editimage"
+                }, label: {
+                    Image(systemName: "iphone")
+                })
+            }
+            if mode == "selectImageInDefault" {
+                ScrollView(.vertical) {
+                    LazyVGrid(columns: columns) {
+                        ForEach(manager.keyList, id: \.self){ key in
+                            DispImage(key: key)
+                        }
+                    }
+                }
+                .frame(width: phone.w*0.85, height: phone.h/2.2)
+            } else if mode == "selectImageInStrage" {
+                ZStack {
+                    ScrollView(.vertical) {
+                        LazyVGrid(columns: columns) {
+                            ForEach(manager.keyList, id: \.self){ key in
+                                DispImage(key: key)
+                            }
+                        }
+                    }
+                    Image(systemName: "plus.app")
+                        .resizable()
+                        .frame(width: phone.w*0.1, height: phone.w*0.1)
+                        .padding(.top, phone.h/2.5)
+                        .padding(.leading, phone.w*0.75)
+                }
+                .frame(width: phone.w*0.85, height: phone.h/2.2)
+            } else if mode == "editimage" {
+                ScrollView(.vertical) {
+                    editSizeView(status: $status)
+                    editFrameView(status: $status, isColorEdit: $frameIsColorEdit)
+                    editShadowView(status: $status, isColorEdit: $shadowIsColorEdit)
+                    editRotationView(status: $status)
+                    editOpacityView(status: $status)
+                }
+                .frame(width: phone.w*0.85, height: phone.h/2.2)
+            }
+        }
+        .frame(width: phone.w*0.85, height: phone.h/2)
+        .padding(.trailing, phone.w*0.15)
+        .background(Color.white)
+        .animation(.default, value: mode)
     }
 }

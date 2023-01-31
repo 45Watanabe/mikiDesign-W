@@ -36,8 +36,3 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
-
-struct phone {
-    static let w = UIScreen.main.bounds.width
-    static let h = UIScreen.main.bounds.height
-}

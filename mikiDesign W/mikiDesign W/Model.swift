@@ -11,6 +11,10 @@ import SwiftUI
 class LayoutModel: ObservableObject {
     @ObservedObject var dispManager: DispManager = .dispManager
     
+    let alerts = AlertCollection()
+    @Published var showAlert = false
+//    @Published var processAlert
+    
     @Published var shapeArray: [ShapeConfiguration] = []
     @Published var beforeEditPosition = CGPoint(x: 0, y: 0)
     @Published var select = 0
@@ -18,6 +22,7 @@ class LayoutModel: ObservableObject {
     @Published var selectTabMode = "Home"
     @Published var isEditMode = false
     @Published var summonTab = "閉じる"
+    
     
     init(){
         if shapeArray.isEmpty {
@@ -46,6 +51,16 @@ class LayoutModel: ObservableObject {
         return shapeArray[select]
     }
     
+    func getIndex(id: String) -> Int? {
+        var result: Int?
+        for i in 0 ..< shapeArray.count {
+            if shapeArray[i].id == id {
+                result = i
+            }
+        }
+        return result
+    }
+    
     func tapButtonInHomeTab(name: String) {
         switch name {
         case "追加": addShape()
@@ -63,20 +78,29 @@ class LayoutModel: ObservableObject {
         case "保存": saveLayout()
         default: break
         }
+        
     }
-
+    
     func addShape() {
         shapeArray.append(sampleShape().sampleRectangle)
         select = shapeArray.count-1
     }
     
-    func removeShape() {
-        if shapeArray.count > 1 {
-            self.shapeArray.remove(at: select)
-            if select > 0 {
-                select-=1
+    func removeShape(){
+        showAlert = true
+    }
+    
+    func returnAlert() {
+        
+// FIXME:        processAlert = alerts.returnAlert(processName: "オブジェクトの削除", {
+//            print("オブジェクトの削除!!!!")
+            if shapeArray.count > 1 {
+                self.shapeArray.remove(at: select)
+                if select > 0 {
+                    select-=1
+                }
             }
-        }
+//        })
     }
     
     func copyShape() {
@@ -87,11 +111,11 @@ class LayoutModel: ObservableObject {
         select += 1
         shapeArray.insert(shape, at: select)
     }
-
+    
     func lockMoveShape() {
         shapeArray[select].lock.toggle()
     }
-
+    
     func editMode(isMove: Bool) {
         if isMove {
             isEditMode = true
@@ -101,11 +125,11 @@ class LayoutModel: ObservableObject {
             shapeArray[select].position = beforeEditPosition
         }
     }
-
+    
     func changeOrder(order: String) {
         if shapeArray.count > 1 {
             let shape: ShapeConfiguration = selectedShape()
-
+            
             switch order {
             case "top":
                 shapeArray.insert(shape, at: shapeArray.count)
@@ -129,16 +153,16 @@ class LayoutModel: ObservableObject {
                 }
             default: break
             }
-
+            
         }
     }
     
     func moveShape(direction: String, distance: Int) {
         switch direction {
-        case "y-": shapeArray[select].position.y -= CGFloat(distance)
-        case "y+": shapeArray[select].position.y += CGFloat(distance)
-        case "x-": shapeArray[select].position.x -= CGFloat(distance)
-        case "x+": shapeArray[select].position.x += CGFloat(distance)
+        case "up": shapeArray[select].position.y -= CGFloat(distance)
+        case "down": shapeArray[select].position.y += CGFloat(distance)
+        case "left": shapeArray[select].position.x -= CGFloat(distance)
+        case "right": shapeArray[select].position.x += CGFloat(distance)
         default: break
         }
     }
@@ -153,6 +177,33 @@ class LayoutModel: ObservableObject {
             }
         }
         return nil
+    }
+    
+}
+
+class AlertCollection {
+    func returnAlert(processName: String, _ handler: @escaping ()->()) -> Alert {
+        var result: Alert
+        switch processName {
+        case "オブジェクトの削除": result = Alert(title: Text("オブジェクトの削除"),
+                                         message: Text("\n図形を削除します。"),
+                                         primaryButton: .cancel(Text("いいえ")),
+                                         secondaryButton: .destructive(Text("はい"),action: {handler()}))
+        case "レイアウトの削除": result = Alert(title: Text("レイアウトの削除"),
+                                        message: Text("\nレイアウトを削除しますか？"),
+                                        primaryButton: .cancel(Text("いいえ")),
+                                        secondaryButton: .destructive(Text("はい"),action: {handler()}))
+        case "ホームへ戻る": result = Alert(title: Text("ホームへ戻ります。"),
+                                      message: Text("\nレイアウトをセーブしますか？"),
+                                      primaryButton: .cancel(Text("いいえ")),
+                                      secondaryButton: .destructive(Text("はい"),action: {handler()}))
+        default: result = Alert(title: Text("処理に失敗しました。"),
+                                message: Text("\n開発者にレポートを送信しますか？"),
+                                primaryButton: .cancel(Text("無視")),
+                                secondaryButton: .destructive(Text("レポート"),action: {print("削除")}))
+        }
+        
+        return result
     }
     
 }

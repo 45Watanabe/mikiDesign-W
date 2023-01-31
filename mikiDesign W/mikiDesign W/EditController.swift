@@ -9,92 +9,75 @@ import SwiftUI
 
 struct ControllerView: View {
     @StateObject var model: LayoutModel
+    let btnName = ButtonName()
+    let modeList = ["Home", "EditShape", "SummonTab", "MoveShape", "MiniMap", "ObjectList"]
+    let controller = size.controller
     var body: some View {
         ZStack {
+//            ベース、影
             RoundedRectangle(cornerRadius: 5)
-                .frame(width: phone.w*0.5 + 1,
-                       height: model.isHide ? 31 : phone.w*0.8 + 1)
+                .frame(width: controller.w + 1, height: model.isHide ? controller.h*0.1+1 : controller.h+1)
                 .foregroundColor(Color.gray)
                 .shadow(color: Color.black, radius: 2, x: 0, y: 0)
                 .overlay(
                     RoundedRectangle(cornerRadius: 5)
                         .foregroundColor(Color.white)
-                        .frame(width: phone.w*0.5,
-                               height: model.isHide ? 30 : phone.w*0.8)
+                        .frame(width: controller.w,
+                               height: model.isHide ? controller.h*0.1 : controller.h)
                 )
-            
+            RoundedRectangle(cornerRadius: 5)
+                            .frame(width: phone.w*0.5 + 1,
+                                   height: model.isHide ? 31 : phone.w*0.8 + 1)
+                            .foregroundColor(Color.gray)
+                            .shadow(color: Color.black, radius: 2, x: 0, y: 0)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 5)
+                                    .foregroundColor(Color.white)
+                                    .frame(width: phone.w*0.5,
+                                           height: model.isHide ? 30 : phone.w*0.8)
+                            )
             VStack(spacing: 0) {
-                HStack(spacing: 10) {
+//                モード切り替えボタン
+                HStack(spacing: 5) {
                     Group {
                         Button(action: {
                             model.isHide.toggle()
                         }){
-                            Image(systemName: model.isHide ?
-                                  "plus.square.fill" : "minus.square.fill")
+                            Image(systemName: model.isHide ? "plus.square.fill" : "minus.square.fill")
                         }
-                        Button(action: {
-                            model.selectTabMode = "Home"
-                            model.isHide = false
-                        }){
-                            Image(systemName: "house")//plus.square.on.square
+                        ForEach(modeList, id: \.self){ mode in
+                            Button(action: {
+                                model.selectTabMode = mode
+                                model.isHide = false
+                            }){
+                                Image(systemName: btnName.getSymbol(name: mode))
+                            }
                         }
-                        Button(action: {
-                            model.selectTabMode = "EditShape"
-                            model.isHide = false
-                        }){
-                            Image(systemName: "wand.and.stars.inverse")
-                        }
-                        Button(action: {
-                            model.selectTabMode = "SummonTab"
-                            model.isHide = false
-                        }){
-                            Image(systemName: "macwindow.badge.plus")
-                        }
-                        Button(action: {
-                            model.selectTabMode = "MoveShape"
-                            model.isHide = false
-                        }){
-                            Image(systemName: "circle.grid.cross")
-                        }
-                        Button(action: {
-                            model.selectTabMode = "MiniMap"
-                            model.isHide = false
-                        }){
-                            Image(systemName: "iphone.circle")
-                        }
-                    }.foregroundColor(Color.black)
+                    }
+                    .foregroundColor(Color.black)
                 }
+                .frame(height: controller.h*0.1)
+                
                 if !model.isHide {
-                    Spacer()
-                    ControlTabView(model: model,
-                                   status: $model.shapeArray[model.select],
-                                   tabMode: $model.selectTabMode)
-                    .frame(height: phone.w*0.8-50)
-                    Spacer()
+                    Rectangle().frame(width: size.controller.w*0.95,height: 1.0).opacity(0.3)
+                    if model.selectTabMode == "Home" {
+                        HomeTab(model: model)
+                    } else if model.selectTabMode == "EditShape" {
+                        EditShapeTab(model: model, status: $model.shapeArray[model.select])
+                    } else if model.selectTabMode == "MoveShape" {
+                        MoveShapeTab(model: model, status: $model.shapeArray[model.select])
+                    } else if model.selectTabMode == "MiniMap" {
+                        MiniMapTab(model: model)
+                    } else if model.selectTabMode == "SummonTab" {
+                        SummonEditTab(model: model)
+                    } else if model.selectTabMode == "ObjectList" {
+                        objectListTab(model: model)
+                    }
+                    Rectangle().frame(width: size.controller.w*0.95,height: 1.0).opacity(0.3)
+                        .padding(.bottom, 5)
                 }
-            }.frame(width: phone.w*0.5,
-                    height: model.isHide ? 30 : phone.w*0.8)
-        }
-    }
-}
-
-struct ControlTabView: View {
-    @StateObject var model: LayoutModel
-    @Binding var status: ShapeConfiguration
-    @Binding var tabMode: String
-    let w = UIScreen.main.bounds.width
-    let h = UIScreen.main.bounds.height
-    var body: some View {
-        if tabMode == "Home" {
-            HomeTab(model: model)
-        } else if tabMode == "EditShape" {
-            EditShapeTab(model: model, status: $status)
-        } else if tabMode == "MoveShape" {
-            MoveShapeTab(model: model, status: $status)
-        } else if tabMode == "MiniMap" {
-            MiniMapTab(model: model)
-        } else if tabMode == "SummonTab" {
-            SummonEditTab(model: model)
+            }
+            .frame(width: controller.w, height: model.isHide ? controller.h*0.1 : controller.h)
         }
     }
 }
@@ -108,8 +91,8 @@ struct HomeTab: View {
     let buttons4 = ["保存","ホーム"]
     
     var body: some View {
-        VStack(spacing: 15) {
-            HStack(spacing: 15) {
+        VStack(spacing: size.tabViewSize.w*0.07) {
+            HStack(spacing: size.tabViewSize.w*0.07) {
                 ForEach(buttons1, id:\.self) { name in
                     Button(action: {
                         model.tapButtonInHomeTab(name: name)
@@ -124,7 +107,7 @@ struct HomeTab: View {
                     }
                 }
             }
-            HStack(spacing: 15) {
+            HStack(spacing: size.tabViewSize.w*0.07) {
                 ForEach(buttons2, id:\.self) { name in
                     Button(action: {
                         model.tapButtonInHomeTab(name: name)
@@ -153,9 +136,7 @@ struct HomeTab: View {
                     }
                 }
             }
-            
-            HStack{
-                
+            HStack {
                 Button(action: {model.tapButtonInHomeTab(name: buttons4[0])}){
                     ZStack {
                         ButtonBase(size: CGSize(width: phone.w/10, height: phone.w/10), text: buttons4[0])
@@ -180,29 +161,56 @@ struct HomeTab: View {
                 EditView(model: model, status: $model.shapeArray[model.select])
             }
         }
+        .frame(width: size.tabViewSize.w, height: size.tabViewSize.h-5)
+// FIXME:        .alert(isPresented: $model.showAlert, content: $model.processAlert)
     }
 }
 
 struct EditShapeTab: View {
     @StateObject var model: LayoutModel
     @Binding var status: ShapeConfiguration
+    let StyleList = ["Rectangle", "Circle", "Ellipse", "Text"]
     var body: some View {
-        ZStack {
-            editButtons
-        }
-    }
-    var editButtons: some View {
         VStack {
-            editStyle
-            editColor
-            editSize
+//            スタイル変更
+            HStack(spacing: 5) {
+                ForEach(StyleList, id: \.self){ style in
+                    Button(action: {
+                        status.style = style
+                    }) {
+                        editStyleButtons(style: style)
+                    }
+                }
+            }
+//            カラー変更
+            selectColoriew(status: $status.color, changeStatus: "", small: true)
+                .frame(width: phone.w/2.2)
+//            サイズ変更
+            VStack(spacing: 0) {
+                Text("W: \(String(format: "%.0f", status.size.width))    H: \(String(format: "%.0f", status.size.height))")
+                Slider(value: $status.size.width, in: 1...phone.w*1.1)
+                    .frame(width: phone.w/2.2)
+                Slider(value: $status.size.height, in: 1...phone.h*1.1)
+                    .frame(width: phone.w/2.2)
+            }
+            
             ZStack {
                 Spacer()
                     .frame(height: 35)
                 if status.style == "Rectangle" {
-                    editCorner
+//                    四角の場合の角丸め
+                    HStack {
+                        Text("丸さ \(String(format: "%.0f", status.corner))")
+                            .foregroundColor(Color.black)
+                            .frame(width: phone.w/6, alignment: .leading)
+                        Slider(value: $status.corner, in: 0...99)
+                            .frame(width: size.tabViewSize.w*0.5)
+                    }.frame(width: size.tabViewSize.w, height: size.tabViewSize.h*0.1)
                 } else if status.style == "Text" {
-                    editText
+//                    テキストの場合の入力
+                    TextField("テキストを入力", text: $status.text.character)
+                        .frame(width: size.tabViewSize.w, height: size.tabViewSize.h*0.1)
+                        .border(Color.gray)
                 }
             }
             HStack {
@@ -221,50 +229,10 @@ struct EditShapeTab: View {
                             EditView(model: model, status: $model.shapeArray[model.select])
                                 .foregroundColor(Color.black)
                         }
-                    
                 }
             }
         }
-    }
-    
-    let StyleList = ["Rectangle", "Circle", "Ellipse", "Text"]
-    var editStyle: some View {
-        HStack(spacing: 5) {
-            ForEach(StyleList, id: \.self){ style in
-                Button(action: {
-                    status.style = style
-                }) {
-                    editStyleButtons(style: style)
-                }
-            }
-        }
-    }
-    var editColor: some View {
-        selectColoriew(status: $status.color, changeStatus: "", small: true)
-            .frame(width: phone.w/2.2)
-    }
-    var editSize: some View {
-        VStack(spacing: 0) {
-            Text("W: \(String(format: "%.0f", status.size.width))    H: \(String(format: "%.0f", status.size.height))")
-            Slider(value: $status.size.width, in: 1...phone.w*1.1)
-                .frame(width: phone.w/2.2)
-            Slider(value: $status.size.height, in: 1...phone.h*1.1)
-                .frame(width: phone.w/2.2)
-        }
-    }
-    var editCorner: some View {
-        HStack {
-            Text("丸さ \(String(format: "%.0f", status.corner))")
-                .foregroundColor(Color.black)
-                .frame(width: phone.w/6, alignment: .leading)
-            Slider(value: $status.corner, in: 0...99)
-                .frame(width: phone.w/4)
-        }
-    }
-    var editText: some View {
-        TextField("テキストを入力", text: $status.text.character)
-            .frame(width: phone.w/2.2, height: 30)
-            .border(Color.gray)
+        .frame(width: size.tabViewSize.w, height: size.tabViewSize.h-5)
     }
 }
 
@@ -272,74 +240,43 @@ struct MoveShapeTab: View {
     @StateObject var model: LayoutModel
     @Binding var status: ShapeConfiguration
     @State var distance = 10
+    let moveButtonSize = size.tabViewSize.w*0.3
     var body: some View {
-        VStack {
-            HStack {
-                VStack {
-                    Text("X : \(String(format: "%.1f", status.position.x))")
-                        .frame(width: phone.w/4, alignment: .leading)
-                    Text("Y : \(String(format: "%.1f", status.position.y))")
-                        .frame(width: phone.w/4, alignment: .leading)
-                }
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                Text("X: \(String(format: "%.1f", status.position.x))")
                 Spacer()
-                VStack {
-                    Button(action: {}){
-                        RoundedRectangle(cornerRadius: 10)
-                            .frame(width: 60, height: 20)
-                            .overlay(Text("AUTO +")
-                                .font(.caption)
-                                .foregroundColor(Color.white))
-                    }
-                    HStack {
-                        Button(action: {distance-=1}){
-                            Text("-")
-                        }
-                        Text("\(distance)")
-                            .frame(width: 25)
-                        Button(action: {distance+=1}){
-                            Text("+")
-                        }
-                    }
+                Text("増減幅")
+            }
+            HStack(spacing: 0) {
+                Text("Y: \(String(format: "%.1f", status.position.y))")
+                Spacer()
+                Button(action: {distance-=1}){
+                    Text("-")
+                }
+                Text("\(distance)")
+                    .frame(width: 25)
+                Button(action: {distance+=1}){
+                    Text("+")
                 }
             }
-            VStack(spacing: 0){
-                Button(action: {
-                    model.moveShape(direction: "y-", distance: distance)
-                }){
-                    Image(systemName: "minus.circle")
-                        .resizable()
-                        .frame(width: 50, height: 50)
-                }
-                HStack {
-                    Button(action: {
-                        model.moveShape(direction: "x-", distance: distance)
-                    }){
-                        Image(systemName: "minus.circle.fill")
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                    }
-                    Spacer().frame(width: 50, height: 50)
-                    Button(action: {
-                        model.moveShape(direction: "x+", distance: distance)
-                    }){
-                        Image(systemName: "plus.circle.fill")
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                    }
-                }
-                Button(action: {
-                    model.moveShape(direction: "y+", distance: distance)
-                }){
-                    Image(systemName: "plus.circle")
-                        .resizable()
-                        .frame(width: 50, height: 50)
-                }
+            Spacer()
+            moveButton(model: model, distance: $distance, orientation: "up")
+            HStack(spacing: 0) {
+                moveButton(model: model, distance: $distance, orientation: "left")
+                Spacer().frame(width: size.tabViewSize.w*0.3)
+                moveButton(model: model, distance: $distance, orientation: "right")
             }
-            Text("端末").frame(width: phone.w/2.2, alignment: .leading)
-            HStack {
-                Text("横: \(String(format: "%.1f", phone.w)) x 縦: \(String(format: "%.1f", phone.h))")
+            moveButton(model: model, distance: $distance, orientation: "down")
+            Spacer()
+            HStack{
+                Image(systemName: "iphone").foregroundColor(Color.black)
+                Text("横"+String(format: "%.0f", phone.w))
+                Text("x")
+                Text("縦"+String(format: "%.0f", phone.h))
             }
-        }.frame(width: phone.w/2.2, height: 30)
+        }
+        .frame(width: size.tabViewSize.w, height: size.tabViewSize.h-5)
     }
 }
 
@@ -350,6 +287,7 @@ struct MiniMapTab: View {
         VStack {
             LayoutMiniMap(layout: $model.shapeArray, model: model, reduction: reduction)
         }
+        .frame(width: size.tabViewSize.w, height: size.tabViewSize.h-5)
     }
 }
 
@@ -360,7 +298,7 @@ struct SummonEditTab: View {
     let buttons2 = ["回転","カラー","閉じる"]
     var body: some View {
         ZStack {
-            VStack(spacing: 30) {
+            VStack(spacing: size.tabViewSize.w*0.1) {
                 RoundedRectangle(cornerRadius: 10)
                     .frame(width: phone.w/2.1, height: 30)
                     .foregroundColor(Color(red: 0, green: 0, blue: 0.5, opacity: 0.8))
@@ -370,7 +308,7 @@ struct SummonEditTab: View {
                             .foregroundColor(Color.white)
                     )
                 
-                HStack(spacing: 15) {
+                HStack(spacing: size.tabViewSize.w*0.07) {
                     ForEach(buttons1, id:\.self) { name in
                         Button(action: {
                             model.summonTab = name
@@ -385,7 +323,7 @@ struct SummonEditTab: View {
                         }
                     }
                 }
-                HStack(spacing: 15) {
+                HStack(spacing: size.tabViewSize.w*0.07) {
                     ForEach(buttons2, id:\.self) { name in
                         Button(action: {
                             model.summonTab = name
@@ -402,6 +340,7 @@ struct SummonEditTab: View {
                 }
             }
         }
+        .frame(width: size.tabViewSize.w, height: size.tabViewSize.h-5)
     }
 }
 
@@ -427,26 +366,43 @@ struct editStyleButtons: View {
     }
 }
 
-
-
-//Shape(status: $status, reduction: 1)
-//    .foregroundColor(Color(red: status.frame.color.r, green: status.frame.color.g,
-//                           blue: status.frame.color.b, opacity: status.frame.color.o))
-//.frame(width: status.size.width + status.frame.width + status.frame.width,
-//       height: status.size.height + status.frame.width + status.frame.width)
-//.shadow(color: Color(red: status.shadow.color.r, green: status.shadow.color.g,
-//                     blue: status.shadow.color.b, opacity: status.shadow.color.o),
-//        radius: status.shadow.radius,
-//        x: status.shadow.x,
-//        y: status.shadow.y)
-//.overlay(
-//    // 図の描画
-//    Shape(status: $status, reduction: 1)
-//        .frame(width: status.size.width, height: status.size.height)
-//        .foregroundColor(Color(red: status.color.r, green: status.color.g,
-//                               blue: status.color.b, opacity: status.color.o))
-//        .opacity(status.opacity)
-//)
-//.rotationEffect(Angle(degrees: status.rotation))
-//
-//.position(status.position)
+struct objectListTab: View {
+    @StateObject var model: LayoutModel
+//    @State var shape_rev = model.shapeArray.reverse()
+    let btnName = ButtonName()
+    let buttons3 = ["最上","上げる","下げる","最下"]
+    var body: some View {
+        VStack {
+            ScrollView(.vertical) {
+                VStack(spacing: 3) {
+                    Spacer().frame(height: 5)
+                    ForEach($model.shapeArray){ status in
+                        ObjectCell(status: status)
+                            .border(model.getIndex(id: status.id) == model.select ?
+                                    Color.pink : Color.gray)
+                            .onTapGesture {
+                                if let index = model.getIndex(id: status.id) {
+                                    model.select = index
+                                }
+                            }
+                    }
+                }
+            }
+            .frame(width: size.tabViewSize.w)
+            .border(Color.gray.opacity(0.3))
+            HStack {
+                ForEach(buttons3, id:\.self) { name in
+                    Button(action: {
+                        model.tapButtonInHomeTab(name: name)
+                    }){
+                        Image(systemName: btnName.getSymbol(name: name))
+                            .resizable()
+                            .frame(width: phone.w/13, height: phone.w/13)
+                    }
+                }
+            }
+            Spacer().frame(height: 5)
+        }
+        .frame(width: size.tabViewSize.w, height: size.tabViewSize.h-5)
+    }
+}

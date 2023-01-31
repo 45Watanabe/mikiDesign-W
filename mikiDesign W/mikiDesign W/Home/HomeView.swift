@@ -10,8 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @ObservedObject var dispManager: DispManager = .dispManager
     @StateObject private var model = LayoutModel()
-    private let layout = [GridItem(.adaptive(minimum: UIScreen.main.bounds.width/2.5),
-                                   alignment: .top)]
+    private let layout = [GridItem(.adaptive(minimum: UIScreen.main.bounds.width/2.5), alignment: .top)]
     var body: some View {
         ZStack {
             Rectangle()
@@ -29,6 +28,7 @@ struct HomeView: View {
                                 dispManager.selectIndex = num
                             }){
                                 LayoutMiniMap(layout: $dispManager.savedLayouts[num], model: model, reduction: 3)
+                                    .clipped()
                                     .padding(5)
                                     .border(dispManager.selectIndex == num ? Color.red : Color.clear,
                                             width: 5)
@@ -37,6 +37,7 @@ struct HomeView: View {
                                             .frame(width: phone.w/2.5, height: phone.h/3)
                                             .foregroundColor(Color.clear)
                                     )
+                                    
                             }
                         }
                         Button(action: {
@@ -59,6 +60,7 @@ struct HomeView: View {
                 .frame(width: phone.w, height: phone.h*0.7)
                 .background(Color.white)
                 
+                // 画面下部の操作ボタン。編集 新規 削除
                 HStack(spacing: phone.w/15) {
                     Button(action: {
                         dispManager.display = "Layout"

@@ -39,10 +39,11 @@ struct LayoutView: View {
                 .rotationEffect(Angle(degrees: model.selectedShape().rotation))
                 .position(model.selectedShape().position)
             
+            // コントローラ
             ControllerView(model: model)
                 .position(ControlerPosition)
                 .animation(.default, value: model.isHide)
-                
+            // コントローラの影
             RoundedRectangle(cornerRadius: 5)
                 .stroke(lineWidth: 10)
                 .frame(width: phone.w*0.5 + 5,
@@ -53,7 +54,10 @@ struct LayoutView: View {
                 .position(ControlerPosition)
                 .gesture(DragGesture()
                     .onChanged({ value in
-                        self.ControlerPosition = value.location}))
+                        self.ControlerPosition = CGPoint(
+                            x: value.location.x,
+                            y: value.location.y
+                        ) }))
                 .onAppear(){
                     ControlerPosition.x = phone.w*0.75
                     ControlerPosition.y = phone.w*0.4

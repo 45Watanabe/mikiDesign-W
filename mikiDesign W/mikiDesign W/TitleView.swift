@@ -23,7 +23,6 @@ struct TitleView: View {
                            height: status.size.height)
                     .position(status.position)
                     .rotationEffect(Angle(degrees: status.rotation))
-                    
             }
             Rectangle()
                 .edgesIgnoringSafeArea(.all)
@@ -48,7 +47,7 @@ struct TitleView: View {
                     .foregroundColor(Color.white)
                     .shadow(color: Color.white, radius: 1, x: 2, y: 3)
                 }.frame(height: 30)
-                    
+                
             }
         }
     }

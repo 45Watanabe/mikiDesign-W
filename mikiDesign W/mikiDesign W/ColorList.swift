@@ -16,7 +16,7 @@ struct selectColoriew: View {
     
     var body: some View {
         ZStack {
-            if !small {
+            if !small && changeStatus == ""{
                 BaseRectangle(size: CGSize(width:  phone.w*0.8, height: phone.w*0.3), text: "\(changeStatus)カラー")
             }
             VStack {

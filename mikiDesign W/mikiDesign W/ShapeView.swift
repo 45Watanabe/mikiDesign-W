@@ -78,6 +78,27 @@ struct MiniShapeView: View {
     }
 }
 
+struct DispImage: View {
+    @State var key: String
+    let ud = UserDefaults.standard
+    var body: some View {
+        ZStack{
+            // keyをもとに画像を表示
+            if let uiImage = ud.image(forKey: key) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .frame(width: 100, height: 100)
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
+            } else {
+                Image(systemName: "photo")
+                    .resizable()
+                    .frame(width: 100, height: 100)
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
+            }
+        }
+    }
+}
+
 struct Shape: View {
     @Binding var status: ShapeConfiguration
     @State var reduction: CGFloat
@@ -136,6 +157,11 @@ struct SymbolView: View {
     }
 }
 
+struct Layouts: Identifiable, Codable {
+    var id = UUID().uuidString
+    var layout: [ShapeConfiguration]
+}
+
 // 図の構造 構成=configuration
 struct ShapeConfiguration: Identifiable, Codable {
     var id = UUID().uuidString
@@ -177,7 +203,6 @@ struct FrameConfiguration: Codable {
     var color: SColor
     var opacity: CGFloat
 }
-
 
 // 文字
 struct TextConfiguration: Codable {
