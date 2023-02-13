@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct ShapeView: View {
     @Binding var status: ShapeConfiguration
@@ -157,13 +158,16 @@ struct SymbolView: View {
     }
 }
 
-struct Layouts: Identifiable, Codable {
-    var id = UUID().uuidString
+struct Layouts: Codable, Identifiable {
+    var id: String = UUID().uuidString
+    var name: String
+    var category: String
+    var canCopy: Bool
     var layout: [ShapeConfiguration]
 }
 
 // 図の構造 構成=configuration
-struct ShapeConfiguration: Identifiable, Codable {
+struct ShapeConfiguration: Codable, Identifiable {
     var id = UUID().uuidString
     var style: String
     var color: SColor
@@ -181,7 +185,7 @@ struct ShapeConfiguration: Identifiable, Codable {
 }
 
 // カラー(Codable準拠のために用意)
-struct SColor: Identifiable, Codable {
+struct SColor: Codable, Identifiable {
     var id = UUID().uuidString
     var r: CGFloat
     var g: CGFloat

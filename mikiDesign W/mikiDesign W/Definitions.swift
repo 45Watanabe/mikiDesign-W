@@ -51,6 +51,7 @@ struct ButtonName {
                       "最下": "square.3.stack.3d.bottom.filled",
                       "保存": "square.and.arrow.down",
                       "ホーム": "house",
+                      "公開": "network",
                       "サイズ": "crop",
                       "フレーム": "square.dashed.inset.filled",
                       "シャドウ": "shadow",

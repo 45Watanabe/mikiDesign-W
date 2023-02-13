@@ -94,15 +94,15 @@ struct EditView: View {
                             .resizable()
                             .frame(width: phone.w/10, height: phone.w/10)
                     }
-                    Button(action: {
-                        isSelectFont = false
-                        isSelectSymbol = false
-                        isSelectImage.toggle()
-                    }){
-                        Image(systemName: "photo.artframe")
-                            .resizable()
-                            .frame(width: phone.w/10, height: phone.w/10)
-                    }
+//                    Button(action: {
+//                        isSelectFont = false
+//                        isSelectSymbol = false
+//                        isSelectImage.toggle()
+//                    }){
+//                        Image(systemName: "photo.artframe")
+//                            .resizable()
+//                            .frame(width: phone.w/10, height: phone.w/10)
+//                    }
                     Spacer()
                 }
             }
@@ -183,11 +183,11 @@ struct editSizeView: View {
         ZStack {
             BaseRectangle(size: CGSize(width:  phone.w*0.8, height: phone.w*0.3), text: "サイズ")
             VStack(spacing: 0) {
-                SliderView(text: "W", width: phone.w*0.4, min: 1, max: phone.w*1.1, value: $status.size.width)
+                SliderView(text: "W", width: phone.w*0.4, min: 1, max: phone.h*1.1, value: $status.size.width)
                 Button(action: {
-                    
+                    status.size.height = status.size.width
                 }){
-                    Image(systemName: "lock.open") //lock .frame(width: 10, height: 15)
+                    Image(systemName: "arrow.down") //lock .frame(width: 10, height: 15)
                         .resizable()
                         .frame(width: 15, height: 15)
                         .foregroundColor(Color.black)

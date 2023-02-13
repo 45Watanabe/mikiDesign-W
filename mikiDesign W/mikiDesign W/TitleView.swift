@@ -34,19 +34,14 @@ struct TitleView: View {
             VStack {
                 Image("logo")
                     .resizable()
-                    .frame(width: phone.w/2, height: phone.w/2)
+                    .frame(width: phone.w/1.5, height: phone.w/1.5)
                     .opacity(manager.titleOpacity)
                 
-                HStack {
-                    Group {
-                        ForEach(manager.mikiDesignW, id: \.self){ text in
-                            Text(text)
-                        }
-                    }
+                Text("Design Piero")
                     .font(.custom("Academy Engraved LET", size: 30))
                     .foregroundColor(Color.white)
                     .shadow(color: Color.white, radius: 1, x: 2, y: 3)
-                }.frame(height: 30)
+                
                 
             }
         }
@@ -56,14 +51,10 @@ struct TitleView: View {
 class AnimationManager: ObservableObject {
     @Published var randomShapes: [useTitleShape] = []
     @Published var titleOpacity = 0.0
-    @Published var mikiDesignW = ["", "", ""]
     var roop = true
     
     init() {
         fadein()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.createAppName(count: 0)
-        }
         DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
             self.addRndomShape()
         }
@@ -74,19 +65,6 @@ class AnimationManager: ObservableObject {
             if self.titleOpacity < 1.0 {
                 self.titleOpacity += 0.05
                 self.fadein()
-            }
-        }
-    }
-    
-    func createAppName(count: Int) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            switch count {
-            case 0: self.mikiDesignW[0] = "miki"
-                self.createAppName(count: 1)
-            case 1: self.mikiDesignW[1] = "Design"
-                self.createAppName(count: 2)
-            case 2: self.mikiDesignW[2] = "W"
-            default: break
             }
         }
     }

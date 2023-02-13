@@ -23,8 +23,8 @@ struct ContentView: View {
                     HomeView()
                 } else if dispManager.display == "Layout" {
                     LayoutView()
-                } else if dispManager.display == "" {
-                    
+                } else if dispManager.display == "Online" {
+                    OnlineLayoutsView()
                 }
             }
         }

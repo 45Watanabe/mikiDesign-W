@@ -14,6 +14,44 @@ struct LayoutView: View {
     @State var summonedTabPosition = CGPoint(x: 0, y: 0)
     var body: some View {
         ZStack {
+            Text("")
+                .alert(isPresented: $model.areltFlag.save) {
+                    Alert(
+                        title: Text("進行状況を保存します。"),
+                        message: Text("*保存した場合巻き戻ることができません。"),
+                        primaryButton: .default(Text("保存する"),
+                                                action: {model.saveLayout()}),
+                        secondaryButton: .destructive(Text("保存しない"),
+                                            action: { print("「いいえ」が押されました") })
+                    )
+                }
+            Text("")
+                .alert(isPresented: $model.areltFlag.home) {
+                    Alert(
+                        title: Text("ホームへ戻ります。"),
+                        message: Text("進行状況を保存しますか？"),
+                        primaryButton: .default(Text("保存して終了"),
+                                                action: {
+                                                    model.saveLayout()
+                                                    model.dispManager.display = "Home"
+                                                }),
+                        secondaryButton: .destructive(Text("保存せず終了"),
+                                            action: {
+                                                model.dispManager.display = "Home"
+                                            })
+                    )
+                }
+            Text("")
+                .alert(isPresented: $model.areltFlag.delete) {
+                    Alert(
+                        title: Text("選択されている図形を\n削除します。"),
+                        message: Text("削除しますか？"),
+                        primaryButton: .default(Text("する"),
+                                                action: {model.removeShape()}),
+                        secondaryButton: .destructive(Text("しない"),
+                                            action: { print("「いいえ」が押されました") })
+                    )
+                }
             // 図の全表示
             ForEach($model.shapeArray){ status in
                 ShapeView(status: status)
@@ -73,9 +111,22 @@ struct LayoutView: View {
                     summonedTabPosition.y = phone.w*0.2
                 }
         }
+        .sheet(isPresented: $model.shouwingUploads, content: {
+            UploadOnlineView(layout: model.shapeArray)
+        })
         .onAppear() {
             model.assignmentLayout()
         }
+//        .alert("タイトル", isPresented: $showingAlert){
+//            Button("ボタン1"){
+//                // ボタン1が押された時の処理
+//            }
+//            Button("ボタン2"){
+//                // ボタン2が押された時の処理
+//            }
+//        } message: {
+//            Text("詳細メッセージ")
+//        }
     }
 }
 

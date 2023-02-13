@@ -88,7 +88,7 @@ struct HomeTab: View {
     let buttons1 = ["追加","追加&編集","編集"]
     let buttons2 = ["削除","コピー","ロック"]
     let buttons3 = ["最上","上げる","下げる","最下"]
-    let buttons4 = ["保存","ホーム"]
+    let buttons4 = ["保存","ホーム","公開"]
     
     var body: some View {
         VStack(spacing: size.tabViewSize.w*0.07) {
@@ -137,6 +137,7 @@ struct HomeTab: View {
                 }
             }
             HStack {
+                // 保存
                 Button(action: {model.tapButtonInHomeTab(name: buttons4[0])}){
                     ZStack {
                         ButtonBase(size: CGSize(width: phone.w/10, height: phone.w/10), text: buttons4[0])
@@ -147,6 +148,7 @@ struct HomeTab: View {
                         
                     }
                 }
+                // ホーム
                 Button(action: {model.tapButtonInHomeTab(name: buttons4[1])}){
                     ZStack {
                         ButtonBase(size: CGSize(width: phone.w/10, height: phone.w/10), text: buttons4[1])
@@ -156,13 +158,22 @@ struct HomeTab: View {
                             .padding(.bottom, phone.w/50)
                     }
                 }
+                // 公開
+                Button(action: {model.tapButtonInHomeTab(name: buttons4[2])}){
+                    ZStack {
+                        ButtonBase(size: CGSize(width: phone.w/10, height: phone.w/10), text: buttons4[2])
+                        Image(systemName: btnName.getSymbol(name: buttons4[2]))
+                            .resizable()
+                            .frame(width: phone.w/11, height: phone.w/11)
+                            .padding(.bottom, phone.w/50)
+                    }
+                }
             }
             .fullScreenCover(isPresented: $model.isEditMode) {
                 EditView(model: model, status: $model.shapeArray[model.select])
             }
         }
         .frame(width: size.tabViewSize.w, height: size.tabViewSize.h-5)
-// FIXME:        .alert(isPresented: $model.showAlert, content: $model.processAlert)
     }
 }
 
@@ -188,7 +199,7 @@ struct EditShapeTab: View {
 //            サイズ変更
             VStack(spacing: 0) {
                 Text("W: \(String(format: "%.0f", status.size.width))    H: \(String(format: "%.0f", status.size.height))")
-                Slider(value: $status.size.width, in: 1...phone.w*1.1)
+                Slider(value: $status.size.width, in: 1...phone.h*1.1)
                     .frame(width: phone.w/2.2)
                 Slider(value: $status.size.height, in: 1...phone.h*1.1)
                     .frame(width: phone.w/2.2)

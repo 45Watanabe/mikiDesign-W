@@ -12,8 +12,6 @@ class LayoutModel: ObservableObject {
     @ObservedObject var dispManager: DispManager = .dispManager
     
     let alerts = AlertCollection()
-    @Published var showAlert = false
-//    @Published var processAlert
     
     @Published var shapeArray: [ShapeConfiguration] = []
     @Published var beforeEditPosition = CGPoint(x: 0, y: 0)
@@ -22,6 +20,8 @@ class LayoutModel: ObservableObject {
     @Published var selectTabMode = "Home"
     @Published var isEditMode = false
     @Published var summonTab = "閉じる"
+    @Published var shouwingUploads = false
+    @Published var areltFlag:(save: Bool, home: Bool, delete: Bool) = (save: false, home: false, delete: false)
     
     
     init(){
@@ -31,7 +31,7 @@ class LayoutModel: ObservableObject {
     }
     
     func assignmentLayout() {
-        shapeArray = dispManager.savedLayouts[dispManager.selectIndex]
+        shapeArray = dispManager.savedLayouts[dispManager.getLayoutIndex(id: dispManager.selectLayoutsId)].layout
         if shapeArray.isEmpty {
             addShape()
         }
@@ -39,12 +39,28 @@ class LayoutModel: ObservableObject {
     
     // レイアウトのセーブ
     func saveLayout() {
-        dispManager.savedLayouts[dispManager.selectIndex] = shapeArray
+        dispManager.savedLayouts[dispManager.getLayoutIndex(id: dispManager.selectLayoutsId)] = Layouts(name: "", category: "ネタ", canCopy: true, layout: shapeArray)
         let encoder = JSONEncoder()
         guard let jsonValue = try? encoder.encode(dispManager.savedLayouts) else {
             fatalError("Failed to encode to JSON.")
         }
         UserDefaults.standard.set(jsonValue, forKey: "savedLayouts")
+    }
+    
+    func saveOnlineLayout(data: Layouts) {
+        if let _ = dispManager.savedLayouts.firstIndex(where: {$0.id == data.id}) {
+            removeLayout(layoutId: data.id)
+        }
+        dispManager.savedLayouts.append(data)
+        saveLayout()
+    }
+    
+    func removeLayout(layoutId: String) {
+        dispManager.savedLayouts.removeAll(where : { $0.id == layoutId })
+    }
+    
+    func GoUploadLayout() {
+        shouwingUploads.toggle()
     }
     
     func selectedShape() -> ShapeConfiguration {
@@ -66,7 +82,7 @@ class LayoutModel: ObservableObject {
         case "追加": addShape()
         case "追加&編集": addShape(); editMode(isMove: true)
         case "編集": editMode(isMove: true)
-        case "削除": removeShape()
+        case "削除": areltFlag.delete.toggle()
         case "コピー": copyShape()
         case "ロック": lockMoveShape()
         case "最上": changeOrder(order: "top")
@@ -74,8 +90,9 @@ class LayoutModel: ObservableObject {
         case "下げる": changeOrder(order: "down")
         case "最下": changeOrder(order: "bottom")
         case "questionmark.circle": break
-        case "ホーム": dispManager.display = "Home"
-        case "保存": saveLayout()
+        case "ホーム": areltFlag.home.toggle()
+        case "保存": areltFlag.save.toggle()
+        case "公開": GoUploadLayout()
         default: break
         }
         
@@ -87,20 +104,12 @@ class LayoutModel: ObservableObject {
     }
     
     func removeShape(){
-        showAlert = true
-    }
-    
-    func returnAlert() {
-        
-// FIXME:        processAlert = alerts.returnAlert(processName: "オブジェクトの削除", {
-//            print("オブジェクトの削除!!!!")
-            if shapeArray.count > 1 {
-                self.shapeArray.remove(at: select)
-                if select > 0 {
-                    select-=1
-                }
+        if shapeArray.count > 1 {
+            self.shapeArray.remove(at: select)
+            if select > 0 {
+                select-=1
             }
-//        })
+        }
     }
     
     func copyShape() {

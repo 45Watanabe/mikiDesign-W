@@ -57,3 +57,49 @@ struct LayoutMiniMap: View {
         }
     }
 }
+
+struct MiniLayouts: View {
+    @ObservedObject var dispManager: DispManager = .dispManager
+    @State var layout: [ShapeConfiguration]
+    @State var reduction: CGFloat
+    let iconList = ["wifi", "battery.100"]
+    var body: some View {
+        ZStack {
+            VStack {
+                HStack(spacing: 3) {
+                    Text("23:59")
+                        .font(.custom("Helvetica", size: 8))
+                        .foregroundColor(Color.black)
+                    Spacer()
+                    ForEach(iconList, id: \.self){ name in
+                        Image(systemName: "\(name)")
+                            .resizable()
+                            .frame(width: 7, height: 5)
+                            .foregroundColor(Color.black)
+                    }
+                }
+                Spacer()
+            }
+            .frame(width: phone.w/reduction,
+                   height: phone.h/reduction)
+            .padding(2)
+            .border(Color.black.opacity(0.8), width: 1)
+                
+            
+            ZStack {
+                ForEach($layout){ status in
+                    MiniShapeView(status: status, reduction: reduction)
+                }
+            }.frame(width: phone.w/reduction,
+                    height: dispManager.safeAreaHeight/reduction)
+            .padding(1)
+            .border(Color.black.opacity(0.2), width: 1)
+            
+            RoundedRectangle(cornerRadius: 5)
+                .stroke(lineWidth: 10)
+                .foregroundColor(Color.black.opacity(0.6))
+                .frame(width: phone.w/reduction + 10,
+                       height: phone.h/reduction + 10)
+        }
+    }
+}
