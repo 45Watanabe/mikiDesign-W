@@ -165,7 +165,7 @@ struct OnlineLayoutsView: View {
                                     title: Text("'\(nowShowLayout.name)'"),
                                     message: Text("を端末へ保存しますか？"),
                                     primaryButton: .default(Text("する"),
-                                                            action: {model.saveOnlineLayout(data: nowShowLayout)}),
+                                                            action: {selectSave_yes()}),
                                     secondaryButton: .destructive(Text("しない"),
                                                         action: { print("「いいえ」が押されました") })
                                 )
@@ -179,6 +179,11 @@ struct OnlineLayoutsView: View {
             }
             
         }
+    }
+    func selectSave_yes() {
+        let nowData: Layouts = nowShowLayout
+        print(nowData.name)
+        model.saveOnlineLayout(data: nowData)
     }
 }
 

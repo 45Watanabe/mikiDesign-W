@@ -13,6 +13,7 @@ struct EditView: View {
     @State var isSelectFont = false
     @State var isSelectSymbol = false
     @State var isSelectImage = false
+    @State var isSelectCode = false
     @State var changeColor = "main"
     @State var isFrameColorEdit = false
     @State var isShadowColorEdit = false
@@ -61,6 +62,7 @@ struct EditView: View {
                         if isSelectFont {fontListView(status: $status)}
                         if isSelectSymbol {SFSymbolsList(status: $status)}
 //                        if isSelectImage {imageSelectView(status: $status, model: model)}
+                        if isSelectCode {swiftCodeView(status: $status)}
                     }
                 }
                 .background(Color.white)
@@ -94,15 +96,15 @@ struct EditView: View {
                             .resizable()
                             .frame(width: phone.w/10, height: phone.w/10)
                     }
-//                    Button(action: {
-//                        isSelectFont = false
-//                        isSelectSymbol = false
-//                        isSelectImage.toggle()
-//                    }){
-//                        Image(systemName: "photo.artframe")
-//                            .resizable()
-//                            .frame(width: phone.w/10, height: phone.w/10)
-//                    }
+                    Button(action: {
+                        isSelectFont = false
+                        isSelectSymbol = false
+                        isSelectCode.toggle()
+                    }){
+                        Image(systemName: "swift")
+                            .resizable()
+                            .frame(width: phone.w/10, height: phone.w/10)
+                    }
                     Spacer()
                 }
             }
@@ -148,6 +150,8 @@ struct EditView: View {
                     editFrameView(status: $status, isColorEdit: $isFrameColorEdit)
                     editShadowView(status: $status, isColorEdit: $isShadowColorEdit)
                     editRotationView(status: $status)
+                    editOpacityView(status: $status)
+//                    swiftCodeView(status: $status)
                 }
                 
             }
@@ -518,6 +522,69 @@ struct editOpacityView: View {
     }
 }
 
+struct swiftCodeView: View {
+    @Binding var status: ShapeConfiguration
+    @State var code = ""
+    var body: some View {
+        ZStack {
+            
+                Text(code)
+                .foregroundColor(Color.black)
+                .font(.custom("", size: 10))
+                .padding(phone.w*0.05)
+                
+        }
+        .onAppear(){ generateCode() }
+        .background(Color.white)
+    }
+    func generateCode() {
+        var padding = ""
+        // フレームの有無
+        if status.frame.color.o > 0 && status.frame.width > 0 && status.frame.opacity > 0 {
+            code += "ZStack {\n"
+            padding = "  "
+        }
+        code += padding
+        switch status.style {
+        case "Rectangle": code += "RoundedRectangle(cornerRadius: \(String(format: "%.0f", status.corner)))\n"
+        case "Circle": code += "Capsule()\n"
+        case "Ellipse": code += "Ellipse()\n"
+        case "Text": code += "Text(\"\(status.text.character)\")\n  .font(.custom(\(status.text.font), size: \(status.text.size)))\n"
+        case "SFSymbols": code += " Image(systemName: \(status.symbolName)\n  .resizable()\n"
+        default:  code += "Shape()\n"
+        }
+        padding += "  "
+        code += padding
+        code += ".frame(width: \(String(format: "%.0f", status.size.width)), height: \(String(format: "%.0f", status.size.height)))\n"
+        code += padding
+        code += ".foregroundColor(Color(red: \(status.color.r), green: \(status.color.g), blue: \(status.color.b), opacity: \(status.color.o)))\n"
+        if status.opacity < 1 {
+            code += padding
+            code += ".opacity(\(String(format: "%.2f", status.opacity)))\n"
+        }
+        
+        if status.frame.color.o > 0 && status.frame.width > 0 && status.frame.opacity > 0 {
+            padding = ""
+            code += "}\n"
+        }
+        
+        if status.shadow.color.o > 0 {
+            code += padding
+            code += ".shadow(color: Color(red: \(status.shadow.color.r), green: \(status.shadow.color.g), blue: \(status.shadow.color.b), opacity: \(status.shadow.color.o)),\n"
+            code += padding
+            code += "        radius: \(String(format: "%.0f", status.shadow.radius)), x: \(String(format: "%.0f", status.shadow.x)), y: \(String(format: "%.0f", status.shadow.y)))\n"
+        }
+        
+        if Int(status.rotation) != 0 {
+            code += padding
+            code += ".rotationEffect(Angle(degrees: \(String(format:"%.0f",status.rotation)))\n"
+        }
+        
+        code += padding
+        code += ".position(x: \(String(format: "%.0f",status.position.x)), y: \(String(format: "%.0f",status.position.y)))"
+    }
+}
+
 struct imageEditView: View {
     @Binding var status: ShapeConfiguration
     @StateObject var model: LayoutModel
@@ -581,6 +648,7 @@ struct imageEditView: View {
                     editShadowView(status: $status, isColorEdit: $shadowIsColorEdit)
                     editRotationView(status: $status)
                     editOpacityView(status: $status)
+                    
                 }
                 .frame(width: phone.w*0.85, height: phone.h/2.2)
             }
