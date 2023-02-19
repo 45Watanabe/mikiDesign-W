@@ -535,6 +535,8 @@ struct swiftCodeView: View {
                 
         }
         .onAppear(){ generateCode() }
+        .frame(width: phone.w*0.85, height: phone.h/2)
+            .padding(.trailing, phone.w*0.15)
         .background(Color.white)
     }
     func generateCode() {
@@ -543,6 +545,7 @@ struct swiftCodeView: View {
         if status.frame.color.o > 0 && status.frame.width > 0 && status.frame.opacity > 0 {
             code += "ZStack {\n"
             padding = "  "
+            
         }
         code += padding
         switch status.style {
