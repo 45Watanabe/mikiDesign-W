@@ -34,7 +34,7 @@ struct UploadOnlineView: View {
                 if createdLayoutName.count >= 6 && createdLayoutName.count <= 18 {
                     Button(action: {
                         uploadArelt = true
-                        FManager.layout = Layouts(id: UUID().uuidString, name: createdLayoutName, category: selectedCategoly, canCopy: isLayoutCancopy, layout: layout)
+                        FManager.layout = Layouts(id: UUID().uuidString, name: createdLayoutName, category: selectedCategoly, canCopy: isLayoutCancopy, layout: layout, good:0, bad:0)
                         FManager.uploadLayoutData()
                     }, label: {
                         Text("アップロード")

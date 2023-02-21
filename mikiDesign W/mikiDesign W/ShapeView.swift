@@ -158,12 +158,22 @@ struct SymbolView: View {
     }
 }
 
+struct oldLayouts: Codable, Identifiable {
+    var id: String = UUID().uuidString
+    var name: String
+    var category: String
+    var canCopy: Bool
+    var layout: [ShapeConfiguration]
+}
+
 struct Layouts: Codable, Identifiable {
     var id: String = UUID().uuidString
     var name: String
     var category: String
     var canCopy: Bool
     var layout: [ShapeConfiguration]
+    var good: Int
+    var bad: Int
 }
 
 // 図の構造 構成=configuration

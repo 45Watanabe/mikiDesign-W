@@ -10,6 +10,8 @@ import Firebase
 import FirebaseFirestoreSwift
 import FirebaseFirestore
 
+//ーーーーーーーーーーー👇これ 58行目の文に関連するものーーーーーーーーーーーーーーーーーーーーー
+
 enum FCollectionReference: String {
     case Layouts
 }
@@ -48,12 +50,30 @@ class FireBaseManager: ObservableObject {
             }
     }
     
+//ーーーーーーーーーーーー👇これでLayouts型のコレクションが勝手に作られますーーーーーーーーーーーーーーーーーー
+    
     // Firebaseにレイアウトを追加。
     func uploadLayoutData() {
         do {
             try FirebaseReference(.Layouts)
                 .document(self.layout.id)
                 .setData(from: self.layout)
+        } catch {
+            print("Error creating online game", error.localizedDescription)
+        }
+    }
+    
+    func changeGoodPoint(id: String, isGood: Bool) {
+        let index = fireLayouts.firstIndex(where: {$0.id == id})
+        if isGood {
+            fireLayouts[index!].good += 1
+        } else {
+            fireLayouts[index!].good -= 1
+        }
+        do {
+            try FirebaseReference(.Layouts)
+                .document(id)
+                .setData(from: fireLayouts[index!], merge: true)
         } catch {
             print("Error creating online game", error.localizedDescription)
         }

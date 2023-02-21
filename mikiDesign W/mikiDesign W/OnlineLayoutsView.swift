@@ -17,6 +17,7 @@ struct OnlineLayoutsView: View {
     @State var dispLayoutInfo = false
     @State var showArelt = false
     @StateObject private var model = LayoutModel()
+    @State var goodList: [String] = []
     private let colum = [GridItem(.adaptive(minimum: UIScreen.main.bounds.width/2.1), alignment: .top)]
     let tag: [tags] =
     [tags(id: "hobby", tag: "ネタ", icon: "😆"),tags(id: "game", tag: "ゲーム", icon: "🥳"),
@@ -140,11 +141,30 @@ struct OnlineLayoutsView: View {
                         .frame(width: phone.w/1.1, alignment: .topTrailing)
                         Spacer()
                         HStack {
-                            Spacer().frame(width: phone.w*0.1)
                             Text("\(nowShowLayout.name)")
-                                .font(.custom("Hiragino Mincho ProN", size: 20))
+                                .font(.custom("Hiragino Mincho ProN", size: 15))
                                 .frame(width: phone.w*0.7)
                                 
+                            Button(action: {
+                                pushGood(isGood: !goodList.contains(nowShowLayout.id))
+                            }, label: {
+                                ZStack {
+                                    Image(systemName: goodList.contains(nowShowLayout.id) ?
+                                          "heart.fill" : "heart")
+                                    .resizable()
+                                    .frame(width: phone.w*0.1, height: phone.w*0.1)
+                                        .foregroundColor(
+                                            goodList.contains(nowShowLayout.id) ?
+                                            Color.pink : Color.gray
+                                        )
+                                    Text("\(nowShowLayout.good)")
+                                        .foregroundColor(
+                                            goodList.contains(nowShowLayout.id) ?
+                                            Color.pink : Color.gray
+                                        )
+                                }
+                            })
+                            
                             Button(action: {
                                 if nowShowLayout.canCopy {
                                     showArelt.toggle()
@@ -172,7 +192,7 @@ struct OnlineLayoutsView: View {
                             }
                         }
                         .frame(width: phone.w, height: phone.w*0.15)
-                        .background(Color.gray.opacity(0.5))
+                        .background(Color.white.opacity(0.9))
                     }
                 }
                 .frame(width: phone.w, height: phone.h/1.1)
@@ -184,6 +204,23 @@ struct OnlineLayoutsView: View {
         let nowData: Layouts = nowShowLayout
         print(nowData.name)
         model.saveOnlineLayout(data: nowData)
+    }
+    
+    func getGoodList() {
+        goodList = UserDefaults.standard.stringArray(forKey: "DesignPiero_GoodList") ?? []
+    }
+    func saveGoodList() {
+        UserDefaults.standard.set(goodList, forKey: "DesignPiero_GoodList")
+    }
+    func pushGood(isGood: Bool) {
+        if isGood {
+            goodList.append(nowShowLayout.id)
+        } else {
+            goodList.removeAll(where: {$0 == nowShowLayout.id})
+        }
+        fireManager.changeGoodPoint(id: nowShowLayout.id, isGood: isGood)
+        saveGoodList()
+        print(goodList)
     }
 }
 
@@ -227,17 +264,23 @@ class sampleLayouts {
                                            name: "テスト用サンプル1",
                                            category: "ネタ",
                                            canCopy: false,
-                                           layout: [ShapeConfiguration(style: "Text", color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 1.0), size: CGSize(width: 400, height: 100), position: CGPoint(x: 150, y: 300), opacity: 1.0, rotation: 0.0, shadow: ShadowConfiguration(color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 1.0), radius: 10, x: 3, y: 3), frame: FrameConfiguration(width: 0, color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 0.0), opacity: 0.0), lock: false, corner: 0, symbolName: "", text: TextConfiguration(character: "サンプル_ネタ1", font: "", size: 20))])
+                                           layout: [ShapeConfiguration(style: "Text", color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 1.0), size: CGSize(width: 400, height: 100), position: CGPoint(x: 150, y: 300), opacity: 1.0, rotation: 0.0, shadow: ShadowConfiguration(color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 1.0), radius: 10, x: 3, y: 3), frame: FrameConfiguration(width: 0, color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 0.0), opacity: 0.0), lock: false, corner: 0, symbolName: "", text: TextConfiguration(character: "サンプル_ネタ1", font: "", size: 20))],
+                                           good: 0,
+                                           bad: 0)
     static let sample_2: Layouts = Layouts(id: "sample2 for created W.M",
                                            name: "テスト用サンプル2",
                                            category: "ネタ",
                                            canCopy: false,
-                                           layout: [ShapeConfiguration(style: "Text", color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 1.0), size: CGSize(width: 400, height: 100), position: CGPoint(x: 150, y: 300), opacity: 1.0, rotation: 0.0, shadow: ShadowConfiguration(color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 1.0), radius: 10, x: 3, y: 3), frame: FrameConfiguration(width: 0, color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 0.0), opacity: 0.0), lock: false, corner: 0, symbolName: "", text: TextConfiguration(character: "サンプル_ネタ2", font: "", size: 20))])
+                                           layout: [ShapeConfiguration(style: "Text", color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 1.0), size: CGSize(width: 400, height: 100), position: CGPoint(x: 150, y: 300), opacity: 1.0, rotation: 0.0, shadow: ShadowConfiguration(color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 1.0), radius: 10, x: 3, y: 3), frame: FrameConfiguration(width: 0, color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 0.0), opacity: 0.0), lock: false, corner: 0, symbolName: "", text: TextConfiguration(character: "サンプル_ネタ2", font: "", size: 20))],
+                                           good: 0,
+                                           bad: 0)
     static let sample_3: Layouts = Layouts(id: "sample3 for created W.M",
                                            name: "テスト用サンプル3",
                                            category: "ゲーム",
                                            canCopy: false,
-                                           layout: [ShapeConfiguration(style: "Rectangle", color: SColor(r: 0.5, g: 0.3, b: 1.0, o: 1.0), size: CGSize(width: 400, height: 100), position: CGPoint(x: 150, y: 300), opacity: 1.0, rotation: 0.0, shadow: ShadowConfiguration(color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 1.0), radius: 10, x: 3, y: 3), frame: FrameConfiguration(width: 0, color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 0.0), opacity: 0.0), lock: false, corner: 0, symbolName: "", text: TextConfiguration(character: "サンプル_ゲーム", font: "", size: 20))])
+                                           layout: [ShapeConfiguration(style: "Rectangle", color: SColor(r: 0.5, g: 0.3, b: 1.0, o: 1.0), size: CGSize(width: 400, height: 100), position: CGPoint(x: 150, y: 300), opacity: 1.0, rotation: 0.0, shadow: ShadowConfiguration(color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 1.0), radius: 10, x: 3, y: 3), frame: FrameConfiguration(width: 0, color: SColor(r: 1.0, g: 1.0, b: 1.0, o: 0.0), opacity: 0.0), lock: false, corner: 0, symbolName: "", text: TextConfiguration(character: "サンプル_ゲーム", font: "", size: 20))],
+                                           good: 0,
+                                           bad: 0)
     
 }
 

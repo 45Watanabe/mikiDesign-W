@@ -39,7 +39,7 @@ class LayoutModel: ObservableObject {
     
     // レイアウトのセーブ
     func saveLayout() {
-        dispManager.savedLayouts[dispManager.getLayoutIndex(id: dispManager.selectLayoutsId)] = Layouts(name: "", category: "ネタ", canCopy: true, layout: shapeArray)
+        dispManager.savedLayouts[dispManager.getLayoutIndex(id: dispManager.selectLayoutsId)] = Layouts(name: "", category: "ネタ", canCopy: true, layout: shapeArray, good:0,bad:0)
         let encoder = JSONEncoder()
         guard let jsonValue = try? encoder.encode(dispManager.savedLayouts) else {
             fatalError("Failed to encode to JSON.")

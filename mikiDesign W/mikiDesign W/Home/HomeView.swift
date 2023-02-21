@@ -47,7 +47,7 @@ struct HomeView: View {
                         Button(action: {
                             let newId = UUID().uuidString
                             dispManager.selectLayoutsId = newId
-                            dispManager.savedLayouts.append(Layouts(id: newId, name: "", category: "ネタ", canCopy: true, layout: []))
+                            dispManager.savedLayouts.append(Layouts(id: newId, name: "", category: "ネタ", canCopy: true, layout: [], good:0,bad:0))
                             dispManager.display = "Layout"
                         }){
                             RoundedRectangle(cornerRadius: 5)
@@ -103,7 +103,7 @@ struct HomeView: View {
                                                     action: {
                                                         let newId = UUID().uuidString
                                                         dispManager.selectLayoutsId = newId
-                                                        dispManager.savedLayouts.append(Layouts(id: newId, name: "", category: "ネタ", canCopy: true, layout: []))
+                                                        dispManager.savedLayouts.append(Layouts(id: newId, name: "", category: "ネタ", canCopy: true, layout: [], good:0,bad:0))
                                                         dispManager.display = "Layout"
                                                     }),
                             secondaryButton: .destructive(Text("しない"),
