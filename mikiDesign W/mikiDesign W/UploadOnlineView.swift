@@ -39,6 +39,7 @@ struct UploadOnlineView: View {
                     }, label: {
                         Text("アップロード")
                             .font(.custom("", size: 25))
+                            .buttonStyle(.bordered)
                         
                     })
                 }

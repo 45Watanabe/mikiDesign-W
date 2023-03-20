@@ -10,7 +10,6 @@ import Firebase
 import FirebaseFirestoreSwift
 import FirebaseFirestore
 
-//ーーーーーーーーーーー👇これ 58行目の文に関連するものーーーーーーーーーーーーーーーーーーーーー
 
 enum FCollectionReference: String {
     case Layouts
@@ -50,7 +49,6 @@ class FireBaseManager: ObservableObject {
             }
     }
     
-//ーーーーーーーーーーーー👇これでLayouts型のコレクションが勝手に作られますーーーーーーーーーーーーーーーーーー
     
     // Firebaseにレイアウトを追加。
     func uploadLayoutData() {

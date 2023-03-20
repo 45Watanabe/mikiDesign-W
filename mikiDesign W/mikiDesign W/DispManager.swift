@@ -44,6 +44,7 @@ class DispManager: ObservableObject {
 //            for status in array {
 //                result.append(Layouts(id: status.id,name: status.name, category: status.category, canCopy: status.canCopy, layout: status.layout, good: 0, bad: 0))
 //            }
+            selectLayoutsId = array.first!.id
             savedLayouts = array
         }
     }
